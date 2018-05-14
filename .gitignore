@@ -36,3 +36,9 @@
 *.ipa
 *.dSYM.zip
 *.dSYM
+
+# Other random stuff
+*.DS_Store
+*.cproject
+*.project
+*.settings/language.settings.xml
