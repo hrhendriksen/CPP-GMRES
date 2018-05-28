@@ -16,12 +16,13 @@ class Matrix
 {
 private: 
 	// member variables
-	double** mData; // data stored in a matrix
-	int mSize_r;
-	int mSize_c;
+	double** mData; // data stored in a matrix (entries)
+	int mSize_r;    // number of rows of the matrix
+	int mSize_c;	// number of columns of the matrix
 public:
 	//constructors
 	// No default constructor
+	
 	// overriden copy constructor
 	Matrix(const Matrix& m1); //copy constructor
 	
@@ -33,6 +34,12 @@ public:
 	
 	//destructor
 	~Matrix();	
+
+	//Function to get number of rows
+	int GetNumberofRows() const;
+	int GetNumberofColumns() const;
+
+	//Function to get number of columns
 
  //   // All "friend" external operators and functions are declared as friend inside the class (here)
  //   // but their actual prototype definitions occur outside the class.
@@ -46,6 +53,8 @@ public:
 	// friend Matrix operator/(const Matrix& m1, const double& a);
 	// friend Matrix operator/(const Matrix& m1, const Vector& v1);
 	friend Matrix create_aug(const Vector& v, const Matrix& m);
+	friend Matrix Gaussian_elimination(Matrix aug);
+	friend Matrix solve_triangular(Matrix GE);
 	void print();
 
 	// //unary operator
@@ -71,6 +80,8 @@ Matrix operator*(const Matrix& m1, const Matrix& m2);
 // Matrix operator*(const Matrix& m1, const double& a);
 // Matrix operator/(const Matrix& m1, const double& a);
 Matrix create_aug(const Vector& v, const Matrix& m);
+Matrix Gaussian_elimination(Matrix aug);
+Matrix solve_triangular(Matrix GE);
 Matrix operator/(const Matrix& m, const Vector& v);
 // //Unary operator
 Matrix operator-(const Matrix& m);

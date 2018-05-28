@@ -33,6 +33,13 @@ public:
    // destructor
    ~Vector();
 
+   // Get vector size
+   int GetVectorSize() const;
+
+   // Read vector entry
+   double Read(int i) const;
+
+
 
    // All "friend" external operators and functions are declared as friend inside the class (here)
    // but their actual prototype definitions occur outside the class.
@@ -70,6 +77,7 @@ double operator*(const Vector& v1, const Vector& v2);
 Vector operator*(const Vector& v, const double& a);
 Vector operator*(const double& a, const Vector& v);
 Vector operator/(const Vector& v, const double& a);
+
 // Unary operator
 Vector operator-(const Vector& v);
 

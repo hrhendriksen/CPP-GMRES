@@ -50,8 +50,20 @@ Vector::~Vector()
   delete[] mData;
 }
 
+// Get vector size
+int Vector::GetVectorSize() const
+{
+  return mSize;
+}
 
 
+// Read vector value
+double Vector::Read(int i) const
+{
+  assert(i> -1);
+  assert(i < mSize+1);
+  return mData[i-1];
+}
 
 
 

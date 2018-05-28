@@ -67,6 +67,20 @@ Matrix::~Matrix()
 	}
 	delete[] mData;
 }
+
+// Function to get number of rows of matrix
+int Matrix::GetNumberofRows() const
+{
+	return mSize_r;
+}
+
+//Function to get number of columns of matrix
+int Matrix::GetNumberofColumns() const
+{
+	return mSize_c;
+}
+
+
 // print matrix
 void Matrix::print()
 {
@@ -625,25 +639,141 @@ Vector operator/(const Vector& v, const Matrix& m)
 Matrix create_aug(const Vector& v, const Matrix& m)
 {
 	assert(m.mSize_c == m.mSize_r);
+	assert(m.mSize_r == v.GetVectorSize());
 	Matrix aug(m.mSize_r, m.mSize_c+1);
 
-	// for(int i = 0; i<n; i++)
-	// {
-	// 	for(int j = 0; j<n+1; j++)
-	// 	{
-	// 		if(j<n){
-	// 				aug(i,j) = m.mData[i][j];
-	// 				std::cout<<aug(i,j)<<"\t";
-	// 				}
-	// 		else if(j == n)
-	// 			{
-	// 			aug[i][j] = v.mData[i];
-	// 			std::cout<<aug[i][j]<<"\t";
-	// 			}
-	// 	}
-	// 		std::cout<<"\n";
-	// }
+	for(int i = 1; i<m.mSize_r+1; i++)
+	{
+		for(int j = 1; j<m.mSize_c+2; j++)
+		{
+			if(j<m.mSize_c+1){
+					aug(i,j) = m.mData[i-1][j-1];
+					std::cout<<aug(i,j)<<"\t";
+					}
+			else if(j == m.mSize_c+1)
+				{
+				aug(i,j) = v.Read(i);
+				std::cout<<aug(i,j)<<"\t";
+				}
+		}
+			std::cout<<"\n";
+	}
 	return aug;
 }
 
+Matrix Gaussian_elimination(Matrix aug)
+{	
+	int m = aug.GetNumberofRows();
+	int n = aug.GetNumberofColumns();
 
+	std::cout << "Gaussian_elimination started with n is"<< m <<"\n";
+	for(int pp=0; pp<m; pp++)
+		{
+			std::cout << aug.mData[pp][0] << "\t" << aug.mData[pp][1]<<"\t"<< aug.mData[pp][2]<< "\t"<< aug.mData[pp][3]<<"\n";
+		}
+	int h = 0;
+	int k = 0;
+	while( h<m and k<m)
+	{
+		// find pivot
+		int max_p=h;
+		for(int l = h; l<m; l++)
+		{
+			if(std::fabs(aug.mData[l][k])>std::fabs(aug.mData[max_p][k]))
+			{
+				max_p = l;
+			}
+			}
+	//		std::cout << max_p;
+			// Now we know what the max pivot is.
+			// swap rows
+	//		std::cout << "here";
+			if(max_p != h)
+			{
+				double ph[m+1];
+				for(int kk = 0; kk<m+1; kk++)
+					{
+						ph[kk] =aug.mData[h][kk];
+					}
+			// std::cout << ph[0] << "\t" << ph[1]<<"\t"<< ph[2]<< "\t" << ph[3]<<"\n";
+				for(int jj = 0; jj<m+1; jj++)
+				{
+					aug.mData[h][jj] = aug.mData[max_p][jj];
+				}
+
+				for(int ll = 0; ll<m+1; ll++)
+				{
+					aug.mData[max_p][ll] = ph[ll];
+				}
+			}
+			std::cout << "___________________ \n";
+			for(int pp=0; pp<m; pp++)
+			{
+				std::cout << aug.mData[pp][0] << "\t" << aug.mData[pp][1]<<"\t"<< aug.mData[pp][2]<< "\t"<< aug.mData[pp][3]<<"\n";
+			}
+
+
+			if(aug.mData[h][k]!=0)
+			{
+				for(int mm = (h+1); mm <m; mm++)
+				{
+					double AA = (aug.mData[mm][k]/aug.mData[h][k]);
+					for(int oo = k; oo<m+1; oo++)
+					{
+	//					std::cout << "o = " << oo;
+						aug.mData[mm][oo] = aug.mData[mm][oo] - AA*aug.mData[h][oo];
+					}
+				}
+			}
+			std::cout << "___________________ \n";
+			for(int pp=0; pp<m; pp++)
+			{
+				std::cout << aug.mData[pp][0] << "\t" << aug.mData[pp][1]<<"\t"<< aug.mData[pp][2]<< "\t"<< aug.mData[pp][3]<<"\n";
+			}
+
+			k+=1;
+			h+=1;
+	}
+
+	double *array = new double[m*n];
+	for (int i = 0; i < m; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			array[i*n+j]=aug.mData[i][j];
+		}
+	}
+	return Matrix(array, m, n);
+}
+
+Matrix solve_triangular(Matrix GE)
+{
+	std::cout<<"solve_triangular\n";
+	int n = GE.mSize_c;
+	int m = GE.mSize_r;
+	std::cout<<"number of columns: "<< n << "\n";
+	// std::cout<<"number of rows: "<< m << "\n";
+
+	// std::cout<<"(2,2) entry"<<GE.mData[2][2]<<"\n";
+	// std::cout<<"(2,3) entry"<<GE.mData[2][3]<<"\n";
+
+	double x[m];
+	for (int i=m-1; i>=0; i--)
+	{
+		x[i] = GE.mData[i][n-1]/GE.mData[i][i];
+		// std::cout<<"running value x[i]"<<x[i]<<"\n";
+
+		for (int k=i-1;k>=0; k--)
+		{
+			GE.mData[k][n] -= GE.mData[k][i] * x[i];
+		}
+
+	}
+	std::cout<<"_._._._._._._. \n";
+	for(int fin = 0; fin<m; fin++)
+	{
+		std::cout << x[fin]<<"\n";
+	}
+
+	return GE;
+}
