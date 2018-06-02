@@ -629,10 +629,13 @@ double& Matrix::operator()(int i, int j)
 	return mData[i-1][j-1];
 }
 
-Vector operator/(const Vector& v, const Matrix& m)
+Vector operator/(const Matrix& m, const Vector& v)
 {
-	Matrix aug = create_aug(v,m);
-	return v;
+	Matrix augmented = create_aug(v, m);
+	Matrix check = Gaussian_elimination(augmented);
+	// std::cout<<"the augmented matrix after the GE::::::::\n";
+	// check.print();
+	return solve_triangular(check);	
 }
 
 
@@ -746,7 +749,7 @@ Matrix Gaussian_elimination(Matrix aug)
 	return Matrix(array, m, n);
 }
 
-Matrix solve_triangular(Matrix GE)
+Vector solve_triangular(Matrix GE)
 {
 	std::cout<<"solve_triangular\n";
 	int n = GE.mSize_c;
@@ -765,15 +768,15 @@ Matrix solve_triangular(Matrix GE)
 
 		for (int k=i-1;k>=0; k--)
 		{
-			GE.mData[k][n] -= GE.mData[k][i] * x[i];
+			GE.mData[k][n-1] -= GE.mData[k][i] * x[i];
 		}
-
+		// std::cout << GE.mData[1][3]
 	}
 	std::cout<<"_._._._._._._. \n";
 	for(int fin = 0; fin<m; fin++)
 	{
-		std::cout << x[fin]<<"\n";
-	}
-
-	return GE;
+		// std::cout << x[fin]<<"\n";
+		// std::cout<<"print vector";
+	 }
+	return Vector(x,m);
 }

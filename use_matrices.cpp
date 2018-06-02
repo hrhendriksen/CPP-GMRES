@@ -9,8 +9,12 @@ int main(int argc, char* argv[])
 	double a_values[2] = {2,1};
 	Matrix a_matrix(a_values,2,1);
 	// Matrix b_matrix(2,3);
-   	double c_values[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-	Matrix c_matrix(c_values,3,3);
+   	double c_values[16] = {2, 4, 3, 1,
+   						   1, 1, 0, 2,
+   						   0, 1, 1, 0,
+   						   3, 0, 1, 2};
+
+	Matrix c_matrix(c_values,4,4);
 
 
 	// a_matrix.print();
@@ -30,14 +34,11 @@ int main(int argc, char* argv[])
 	// catch(Exception& e){
 	// 	e.DebugPrint();
 	// }
-	double d[3] = {1,2,3};
-	Vector b(d, 3);
+	double d[4] = {2,4,5,2};
+	Vector b(d, 4);
 	// double cc = b.Read(2);
 	// std::cout<<cc<<"\n";
-	Matrix augmented = create_aug(b, c_matrix);
-	Matrix check = Gaussian_elimination(augmented);
-	// std::cout<<"the augmented matrix after the GE::::::::\n";
-	// check.print();
-	solve_triangular(check);
+	Vector zz = c_matrix/b;
+	std::cout << zz<< "\n";
 	return 0;
 }

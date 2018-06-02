@@ -54,8 +54,7 @@ public:
 	// friend Matrix operator/(const Matrix& m1, const Vector& v1);
 	friend Matrix create_aug(const Vector& v, const Matrix& m);
 	friend Matrix Gaussian_elimination(Matrix aug);
-	friend Matrix solve_triangular(Matrix GE);
-	void print();
+	friend Vector solve_triangular(Matrix GE);
 
 	// //unary operator
 	friend Matrix operator-(const Matrix& m);
@@ -81,8 +80,8 @@ Matrix operator*(const Matrix& m1, const Matrix& m2);
 // Matrix operator/(const Matrix& m1, const double& a);
 Matrix create_aug(const Vector& v, const Matrix& m);
 Matrix Gaussian_elimination(Matrix aug);
-Matrix solve_triangular(Matrix GE);
-Matrix operator/(const Matrix& m, const Vector& v);
+Vector solve_triangular(Matrix GE);
+Vector operator/(const Matrix& m, const Vector& v);
 // //Unary operator
 Matrix operator-(const Matrix& m);
 //void print(const Matrix& m);
