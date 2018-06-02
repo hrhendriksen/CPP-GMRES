@@ -17,11 +17,15 @@ int main(int argc, char* argv[])
 	Matrix c_matrix(c_values,4,4);
 
 
-	// a_matrix.print();
+	a_matrix.print();
 	std::cout<<"------------------------------ \n";
 	c_matrix.print();
 	std::cout<<"------------------------------ \n";
 	// Matrix d = c_matrix + a_matrix;
+	Matrix c2 = (c_matrix*c_matrix)/12;
+	std::cout<<"---------------c*c=--------------- \n";
+	c2.print();
+	std::cout<<"---------------c*c=--------------- \n";
 	// d.print();
 	// Matrix e = -c_matrix;
 	// std::cout<<"------------------------------ \n";

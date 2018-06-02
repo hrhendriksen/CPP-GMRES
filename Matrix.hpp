@@ -5,9 +5,7 @@
 //  *  Class of vectors  *
 //  **********************
 
-
-//  Class written in such a way that code similar to Matlab
-//  code may be written
+//  Class written in such a way that code similar to Matlab code may be written
 #include <cmath>
 #include "Vector.hpp"
 #include "Exception.hpp"
@@ -37,34 +35,41 @@ public:
 
 	//Function to get number of rows
 	int GetNumberofRows() const;
+
+	//Function to get number of columns	
 	int GetNumberofColumns() const;
 
-	//Function to get number of columns
 
- //   // All "friend" external operators and functions are declared as friend inside the class (here)
- //   // but their actual prototype definitions occur outside the class.
- //   // Binary operators
+   // All "friend" external operators and functions are declared as friend inside the class (here)
+   // but their actual prototype definitions occur outside the class.
+   // Binary operators
 
 	friend Matrix operator+(const Matrix& m1, const Matrix& m2);
 	friend Matrix operator-(const Matrix& m1, const Matrix& m2);
-	// friend Matrix operator*(const Matrix& m1, const Matrix& m2);
-	// friend Matrix operator*(const double& a,  const Matrix& m2);
-	// friend Matrix operator*(const Matrix& m1, const double& a);
-	// friend Matrix operator/(const Matrix& m1, const double& a);
+	friend Matrix operator*(const Matrix& m1, const Matrix& m2);
+	friend Matrix operator*(const double& a,  const Matrix& m2);
+	friend Matrix operator*(const Matrix& m1, const double& a);
+	friend Matrix operator/(const Matrix& m1, const double& a);
 	// friend Matrix operator/(const Matrix& m1, const Vector& v1);
-	friend Matrix create_aug(const Vector& v, const Matrix& m);
-	friend Matrix Gaussian_elimination(Matrix aug);
-	friend Vector solve_triangular(Matrix GE);
 
-	// //unary operator
+	//unary operator
 	friend Matrix operator-(const Matrix& m);
+	
+	//other operators
+	//Create augmented matrix
+	friend Matrix create_aug(const Vector& v, const Matrix& m);
+	// Apply Gaussian Elimination
+	Matrix Gaussian_elimination();
+	//Solve triangular system
+	Vector solve_triangular();
 
-	// //other operators
-	// //assignment
+
+	//Overloaded assignment
 	Matrix& operator=(const Matrix& m);
-	// //indexing
+	//indexing starting from 1
 	double& operator()(int row, int column);
-	// //output
+	//output
+	void print();
 	// friend std::ostream& operator<<(std::ostream& output, const Matrix& m);
 
 };
@@ -75,16 +80,16 @@ public:
 Matrix operator+(const Matrix& m1, const Matrix& m2);
 Matrix operator-(const Matrix& m1, const Matrix& m2);
 Matrix operator*(const Matrix& m1, const Matrix& m2);
-// Matrix operator*(const double& a,  const Matrix& m2);
-// Matrix operator*(const Matrix& m1, const double& a);
-// Matrix operator/(const Matrix& m1, const double& a);
+Matrix operator*(const double& a,  const Matrix& m2);
+Matrix operator*(const Matrix& m1, const double& a);
+Matrix operator/(const Matrix& m1, const double& a);
 Matrix create_aug(const Vector& v, const Matrix& m);
-Matrix Gaussian_elimination(Matrix aug);
-Vector solve_triangular(Matrix GE);
+// Matrix Gaussian_elimination(Matrix aug);
 Vector operator/(const Matrix& m, const Vector& v);
 // //Unary operator
 Matrix operator-(const Matrix& m);
-//void print(const Matrix& m);
+
+// void print(const Matrix& m);
 
 
 #endif
