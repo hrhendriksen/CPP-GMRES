@@ -39,22 +39,12 @@ Vector::Vector(double arr[], int sizeVal)
   }
 }
 
-
-
-
-
-
 // destructor - deletes pointer
 Vector::~Vector()
 {
   delete[] mData;
 }
 
-// Get vector size
-int Vector::GetVectorSize() const
-{
-  return mSize;
-}
 
 
 // Read vector value
@@ -66,7 +56,11 @@ double Vector::Read(int i) const
 }
 
 
-
+Vector size(const Vector& v)
+{
+  double values[2] = {1,v.mSize};
+  return Vector(values,2);
+}
 
 
 
@@ -441,9 +435,6 @@ double Vector::norm(int p) const
 
   return pow(norm_val, 1.0/((double) (p)));
 }
-
-
-
 
 // return length of a vector
 int length(const Vector& v)

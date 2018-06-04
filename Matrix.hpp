@@ -27,8 +27,9 @@ public:
 	//construct matrix of given size
 	Matrix(int sizeVal_r,int sizeVal_c);
 	
-	// initialisation constructor
-	Matrix(double arr[], int sizeVal_r, int sizeVal_c);
+	// Overloaded initialisation constructor
+	Matrix(double array[], int sizeVal_r, int sizeVal_c);
+	Matrix(Vector& vector, int sizeVal_r, int sizeVal_c);
 	
 	//destructor
 	~Matrix();	
@@ -48,13 +49,15 @@ public:
 	friend Matrix operator-(const Matrix& m1, const Matrix& m2);
 	friend Matrix operator*(const Matrix& m1, const Matrix& m2);
 	friend Matrix operator*(const double& a,  const Matrix& m2);
-	friend Matrix operator*(const Matrix& m1, const double& a);
-	friend Matrix operator/(const Matrix& m1, const double& a);
-	// friend Matrix operator/(const Matrix& m1, const Vector& v1);
+	friend Vector operator*(const Vector &v,  const Matrix& m);
+	friend Vector operator*(const Matrix& m, const Vector &v);
+	friend Matrix operator*(const Matrix& m, const double& a);
+	friend Matrix operator/(const Matrix& m, const double& a);
+	friend Matrix operator/(const Matrix& m, const double& a);
 
 	//unary operator
 	friend Matrix operator-(const Matrix& m);
-	
+
 	//other operators
 	//Create augmented matrix
 	friend Matrix create_aug(const Vector& v, const Matrix& m);
@@ -69,27 +72,37 @@ public:
 	//indexing starting from 1
 	double& operator()(int row, int column);
 	//output
-	void print();
+	friend void print(const Matrix& m);
 	// friend std::ostream& operator<<(std::ostream& output, const Matrix& m);
-
+	friend double det(const Matrix& m);
+	friend Vector size(const Matrix& m);
+	// friend Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol);
 };
 
 // All "friend" external operators and functions are declared as friend inside the class
 // but their actual prototype definitions occur outside the class (here).
-// Binary operators
 Matrix operator+(const Matrix& m1, const Matrix& m2);
 Matrix operator-(const Matrix& m1, const Matrix& m2);
 Matrix operator*(const Matrix& m1, const Matrix& m2);
 Matrix operator*(const double& a,  const Matrix& m2);
+Vector operator*(const Matrix& m,  const Vector &v);
+Vector operator*(const Vector &v,  const Matrix& m);
 Matrix operator*(const Matrix& m1, const double& a);
 Matrix operator/(const Matrix& m1, const double& a);
 Matrix create_aug(const Vector& v, const Matrix& m);
+
 // Matrix Gaussian_elimination(Matrix aug);
 Vector operator/(const Matrix& m, const Vector& v);
-// //Unary operator
+// GMres solver
+// Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol);
+//Unary operator
 Matrix operator-(const Matrix& m);
+//
+Vector size(const Matrix& m);
 
-// void print(const Matrix& m);
+Matrix eye(int n);
+Matrix diag(const Vector& v,int n);
 
-
+void print(const Matrix& m);
+double det(const Matrix& m);
 #endif

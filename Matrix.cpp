@@ -57,6 +57,24 @@ Matrix::Matrix(double arr[], int sizeVal_r, int sizeVal_c)
 	}
 }
 
+// initialisation constructor
+Matrix::Matrix(Vector& vector, int sizeVal_r, int sizeVal_c)
+{
+		mSize_r = sizeVal_r;
+		mSize_c = sizeVal_c;
+		mData = new double* [sizeVal_r];
+
+		for(int i = 0; i<sizeVal_r; i++)
+		{
+			mData[i] = new double [sizeVal_c];
+			for (int j = 0; j < sizeVal_c; ++j)
+			{
+				mData[i][j] = vector.Read(sizeVal_c*i+j+1);
+			}
+		}
+}
+
+
 // Matrix desctructor
 Matrix::~Matrix()
 {
@@ -584,16 +602,53 @@ Matrix operator*(const Matrix& m2, const double& a)
 
 Matrix operator/(const Matrix& m1, const double& a)
 {
-	assert(a != 0);
-	return m1*(1.0/a); 
+  if (a == 0.0)
+  {
+     throw Exception("div 0", "Attempt to divide by zero");
+  }
+
+  return m1*(1.0/a); 
 }
 
+Vector operator*(const Matrix& m,  const Vector& v)
+{
+	assert(m.mSize_c == length(v));
+	double array[m.mSize_r];
+
+	for (int i = 0; i < m.mSize_r; ++i)
+	{	
+		array[i] = 0;
+		for (int j = 0; j < m.mSize_c; ++j)
+		{
+			array[i] += m.mData[i][j]*v.Read(j+1);	
+		}
+	}
+	Vector ans(array, m.mSize_r);
+	return ans;
+}
+
+Vector operator*(const Vector &v, const Matrix& m)
+{
+	assert(m.mSize_r == length(v));
+	double array[m.mSize_c];
+	for (int j = 0; j < m.mSize_c; ++j)
+	{
+		array[j]=0;
+
+		for (int i = 0; i < m.mSize_r; ++i)
+		{
+			array[j] += m.mData[i][j]*v.Read(i+1);
+		}
+	}
+	Vector ans(array, m.mSize_c);
+	return ans;
+}
 
 // Function that creates the augmented matrix from a vector and a matrix
 Matrix create_aug(const Vector& v, const Matrix& m)
 {
 	assert(m.mSize_c == m.mSize_r);
-	assert(m.mSize_r == v.GetVectorSize());
+	assert(m.mSize_r == length(v));
 	Matrix aug(m.mSize_r, m.mSize_c+1);
 
 	for(int i = 1; i<m.mSize_r+1; i++)
@@ -631,18 +686,61 @@ Matrix operator-(const Matrix& m)
 	return w;
 }
 
-// print matrix
-void Matrix::print()
+// return the size of a matrix
+Vector size(const Matrix& m)
 {
-	for (int i = 0; i < mSize_r; ++i)
+	double values[2] = {m.mSize_r,m.mSize_c};
+	return Vector(values,2);
+}
+
+
+// print matrix
+void print(const Matrix& m1)
+{
+	for (int i = 0; i < m1.mSize_r; ++i)
 	{
 
-		for (int j = 0; j < mSize_c; ++j)
+		for (int j = 0; j < m1.mSize_c; ++j)
 		{
-			std::cout<< mData[i][j] << "\t";
+			std::cout<< m1.mData[i][j] << "\t";
 		}
 	std::cout<<"\n";
 	}
+}
+
+// Recursive function to calculate determinant
+double det(const Matrix& m)
+{
+	assert(m.mSize_r == m.mSize_c);
+	double determinant = 0.0;
+	
+	if (m.mSize_r == 1)
+	{
+		determinant = m.mData[0][0];
+	}
+	else
+	{
+		// More than one entry of matrix
+		for (int i_outer = 0; i_outer < m.mSize_r; ++i_outer)
+			{
+				Matrix sub_matrix(m.mSize_r-1, m.mSize_c-1);
+				for (int i = 0; i < m.mSize_r-1; ++i)
+				{
+					for (int j = 0; j < i_outer; ++j)
+					{
+							sub_matrix(i+1,j+1) = m.mData[i+1][j];
+					}
+					for (int j = i_outer; j < m.mSize_c-1; ++j)
+					{
+						sub_matrix(i+1,j+1) = m.mData[i+1][j+1];
+					}
+				}
+			double sub_matrix_determinant = det(sub_matrix);
+
+			determinant += pow(-1.0,i_outer) * m.mData[0][i_outer]*sub_matrix_determinant;
+			}	
+	}
+	return determinant;
 }
 
 //definition of the matrix operation =
@@ -702,99 +800,11 @@ double& Matrix::operator()(int i, int j)
 
 Vector operator/(const Matrix& m, const Vector& v)
 {
+	assert(det(m)!= 0);
 	Matrix augmented = create_aug(v, m);
 	Matrix check = augmented.Gaussian_elimination();
-	// std::cout<<"the augmented matrix after the GE::::::::\n";
-	// check.print();
 	return check.solve_triangular();	
 }
-
-
-// Matrix Gaussian_elimination(Matrix aug)
-// {	
-// 	int m = aug.GetNumberofRows();
-// 	int n = aug.GetNumberofColumns();
-
-// 	std::cout << "Gaussian_elimination started with n is"<< m <<"\n";
-// 	for(int pp=0; pp<m; pp++)
-// 		{
-// 			std::cout << aug.mData[pp][0] << "\t" << aug.mData[pp][1]<<"\t"<< aug.mData[pp][2]<< "\t"<< aug.mData[pp][3]<<"\n";
-// 		}
-// 	int h = 0;
-// 	int k = 0;
-// 	while( h<m and k<m)
-// 	{
-// 		// find pivot
-// 		int max_p=h;
-// 		for(int l = h; l<m; l++)
-// 		{
-// 			if(std::fabs(aug.mData[l][k])>std::fabs(aug.mData[max_p][k]))
-// 			{
-// 				max_p = l;
-// 			}
-// 			}
-// 	//		std::cout << max_p;
-// 			// Now we know what the max pivot is.
-// 			// swap rows
-// 	//		std::cout << "here";
-// 			if(max_p != h)
-// 			{
-// 				double ph[m+1];
-// 				for(int kk = 0; kk<m+1; kk++)
-// 					{
-// 						ph[kk] =aug.mData[h][kk];
-// 					}
-// 			// std::cout << ph[0] << "\t" << ph[1]<<"\t"<< ph[2]<< "\t" << ph[3]<<"\n";
-// 				for(int jj = 0; jj<m+1; jj++)
-// 				{
-// 					aug.mData[h][jj] = aug.mData[max_p][jj];
-// 				}
-
-// 				for(int ll = 0; ll<m+1; ll++)
-// 				{
-// 					aug.mData[max_p][ll] = ph[ll];
-// 				}
-// 			}
-// 			std::cout << "___________________ \n";
-// 			for(int pp=0; pp<m; pp++)
-// 			{
-// 				std::cout << aug.mData[pp][0] << "\t" << aug.mData[pp][1]<<"\t"<< aug.mData[pp][2]<< "\t"<< aug.mData[pp][3]<<"\n";
-// 			}
-
-
-// 			if(aug.mData[h][k]!=0)
-// 			{
-// 				for(int mm = (h+1); mm <m; mm++)
-// 				{
-// 					double AA = (aug.mData[mm][k]/aug.mData[h][k]);
-// 					for(int oo = k; oo<m+1; oo++)
-// 					{
-// 	//					std::cout << "o = " << oo;
-// 						aug.mData[mm][oo] = aug.mData[mm][oo] - AA*aug.mData[h][oo];
-// 					}
-// 				}
-// 			}
-// 			std::cout << "___________________ \n";
-// 			for(int pp=0; pp<m; pp++)
-// 			{
-// 				std::cout << aug.mData[pp][0] << "\t" << aug.mData[pp][1]<<"\t"<< aug.mData[pp][2]<< "\t"<< aug.mData[pp][3]<<"\n";
-// 			}
-
-// 			k+=1;
-// 			h+=1;
-// 	}
-
-// 	double *array = new double[m*n];
-// 	for (int i = 0; i < m; ++i)
-// 	{
-// 		for (int j = 0; j < n; ++j)
-// 		{
-// 			array[i*n+j]=aug.mData[i][j];
-// 		}
-// 	}
-// 	return Matrix(array, m, n);
-// }
-
 
 Matrix Matrix::Gaussian_elimination()
 {	
@@ -912,3 +922,57 @@ Vector Matrix::solve_triangular()
 	 }
 	return Vector(x,m);
 }
+
+Matrix eye(int n)
+{
+	double data[n*n];
+	for (int i = 0; i < n*n; ++i)
+	{
+		if (i%(n+1) == 0)
+		{
+			data[i] = 1;
+		}
+		else
+		{
+			data[i]=0;
+		}
+	}
+	Matrix I(data,n,n);
+	return I;
+}
+
+Matrix diag(const Vector& v, int k)
+{	int n = length(v)+std::abs(k);
+	std::cout << "n is " << n << "\n";
+	std::cout << "length of v is"<< length(v)<<"\n";
+	double data[n*n];
+	int l = 0;
+	for (int i = 0; i < n*n; ++i)
+	{
+		if ((i-k)%(n+1) == 0 && l < length(v))
+		{	
+			std::cout << "i = " << i << "\t l = " << l << "\n";
+			data[i] = v.Read(l+1);
+			l+=1;
+		}
+
+		else
+		{
+			data[i]=0;
+		}
+	}
+	Matrix D(data,n,n);
+	return D;
+}
+
+// Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol)
+// {
+// 	assert(A.mSize_r == A.mSize_c);
+// 	int iter = 0;
+// 	int flag = 0;
+// 	double norm_b = norm(b);
+// 	Vector r = b - A*x0;
+	
+
+// 	return r;
+// }

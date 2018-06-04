@@ -9,7 +9,6 @@
 //  Class written in such a way that code similar to Matlab
 //  code may be written
 
-
 #include <cmath>
 #include "Exception.hpp"//  This class throws errors using the class "error"
 
@@ -33,8 +32,7 @@ public:
    // destructor
    ~Vector();
 
-   // Get vector size
-   int GetVectorSize() const;
+   // Get vector length
 
    // Read vector entry
    double Read(int i) const;
@@ -52,6 +50,8 @@ public:
    friend Vector operator/(const Vector& v, const double& a);
    // Unary operator
    friend Vector operator-(const Vector& v);
+   friend int length(const Vector& v);
+
 
    //other operators
    //assignment
@@ -65,7 +65,7 @@ public:
    double norm(int p=2) const;
    // functions that are friends
    friend double norm(Vector& v, int p);
-   friend int length(const Vector& v);
+   friend Vector size(const Vector& v);
 };
 
 // All "friend" external operators and functions are declared as friend inside the class
@@ -77,6 +77,7 @@ double operator*(const Vector& v1, const Vector& v2);
 Vector operator*(const Vector& v, const double& a);
 Vector operator*(const double& a, const Vector& v);
 Vector operator/(const Vector& v, const double& a);
+int length(const Vector& v);
 
 // Unary operator
 Vector operator-(const Vector& v);
@@ -85,5 +86,5 @@ Vector operator-(const Vector& v);
 double norm(Vector& v, int p=2);
 // Prototype signature of length() friend function
 int length(const Vector& v);
-
+Vector size(const Vector& v);
 #endif

@@ -16,21 +16,32 @@ int main(int argc, char* argv[])
 
 	Matrix c_matrix(c_values,4,4);
 
+	Vector c22(c_values,16);
 
-	a_matrix.print();
+	double d[4] = {2,4,5,2};
+	Vector d2(d,4);
+
+	print(a_matrix);
 	std::cout<<"------------------------------ \n";
-	c_matrix.print();
-	std::cout<<"------------------------------ \n";
+	// print();
+	// std::cout<<"------------------------------ \n";
 	// Matrix d = c_matrix + a_matrix;
 	Matrix c2 = (c_matrix*c_matrix)/12;
-	std::cout<<"---------------c*c=--------------- \n";
-	c2.print();
-	std::cout<<"---------------c*c=--------------- \n";
-	// d.print();
-	// Matrix e = -c_matrix;
-	// std::cout<<"------------------------------ \n";
-	// // e.print();
-	// std::cout<<"------------------------------ \n";
+	std::cout<<"---------------c=--------------- \n";
+	print(c_matrix);
+	std::cout<<"has dimensions"<< size(c_matrix)<<"\n";
+	std::cout<<"---------------c22=--------------- \n";
+	Vector ans = c_matrix*d2;
+	std::cout <<"ans is "<< ans <<" with dimensions"<<size(ans)<<"\n";
+	std::cout<<"---------------c33=--------------- \n";
+	Vector ans2 = d2 * c_matrix;
+	std::cout <<"ans is "<< ans2 <<"\n";
+	std::cout<<"-------- I ---------------------- \n";
+	print(diag(c22,0));
+	print(diag(c22,1));
+	print(diag(c22,3));
+
+	std::cout<<"------------------------------ \n";
 	// Matrix f(3,2);
 	// try{
 	// f = a_matrix-c_matrix;
@@ -38,11 +49,10 @@ int main(int argc, char* argv[])
 	// catch(Exception& e){
 	// 	e.DebugPrint();
 	// }
-	double d[4] = {2,4,5,2};
 	Vector b(d, 4);
 	// double cc = b.Read(2);
 	// std::cout<<cc<<"\n";
 	Vector zz = c_matrix/b;
-	std::cout << zz<< "\n";
+	// std::cout << gmres(c_matrix, b, zz, 10,10)<< "\n";
 	return 0;
 }
