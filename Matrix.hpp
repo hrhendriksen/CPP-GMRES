@@ -22,7 +22,8 @@ public:
 	// No default constructor
 	
 	// overriden copy constructor
-	Matrix(const Matrix& m1); //copy constructor
+	Matrix(const Matrix& m); //copy constructor from a matrix
+	Matrix(const Vector& v); //Copy (conversion) constructor from a vector
 	
 	//construct matrix of given size
 	Matrix(int sizeVal_r,int sizeVal_c);
@@ -61,6 +62,8 @@ public:
 	//other operators
 	//Create augmented matrix
 	friend Matrix create_aug(const Vector& v, const Matrix& m);
+	// Reshape matrix
+	// friend Matrix reshape(const Matrix& m, int new_m, int new_n);
 	// Apply Gaussian Elimination
 	Matrix Gaussian_elimination();
 	//Solve triangular system
@@ -76,7 +79,6 @@ public:
 	// friend std::ostream& operator<<(std::ostream& output, const Matrix& m);
 	friend double det(const Matrix& m);
 	friend Vector size(const Matrix& m);
-	// friend Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol);
 };
 
 // All "friend" external operators and functions are declared as friend inside the class
@@ -89,12 +91,16 @@ Vector operator*(const Matrix& m,  const Vector &v);
 Vector operator*(const Vector &v,  const Matrix& m);
 Matrix operator*(const Matrix& m1, const double& a);
 Matrix operator/(const Matrix& m1, const double& a);
+
+//Create augmented matrix
 Matrix create_aug(const Vector& v, const Matrix& m);
+// Reshape matrix
+// Matrix reshape(const Matrix& m, int new_m, int new_n);
+//Append column
+Matrix append_c(const Matrix& m, const Vector& v);
 
 // Matrix Gaussian_elimination(Matrix aug);
 Vector operator/(const Matrix& m, const Vector& v);
-// GMres solver
-// Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol);
 //Unary operator
 Matrix operator-(const Matrix& m);
 //

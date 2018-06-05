@@ -2,20 +2,35 @@
 #include "Matrix.hpp"
 
 //copy constructor
-Matrix::Matrix(const Matrix& m1)
+Matrix::Matrix(const Matrix& m)
 {
-	mSize_r = m1.mSize_r;
-	mSize_c = m1.mSize_c;
+	mSize_r = m.mSize_r;
+	mSize_c = m.mSize_c;
 
-	mData = new double* [m1.mSize_r];
+	mData = new double* [m.mSize_r];
 
-	for(int i = 0; i<m1.mSize_r; i++)
+	for(int i = 0; i<m.mSize_r; i++)
 	{
 		mData[i] = new double [mSize_c];
 		for (int j = 0; j < mSize_c; ++j)
 		{
-			mData[i][j] = m1.mData[i][j];
+			mData[i][j] = m.mData[i][j];
 		}
+	}
+}
+// copy (conversion) constructor that makes a Matrix out of a Vector
+Matrix::Matrix(const Vector& v)
+{	
+	int m = length(v);
+	mSize_r = m;
+	mSize_c = 1;
+
+	mData = new double* [m];
+	for (int i = 0; i < m; ++i)
+	{
+		mData[i] = new double [1];
+		
+		mData[i][0] = v.Read(i+1);
 	}
 }
 
@@ -743,6 +758,15 @@ double det(const Matrix& m)
 	return determinant;
 }
 
+// Reshape matrix, only allow if the new matrix is equal or bigger in size (otherwise info. is lost)
+// Matrix reshape(const Matrix& m, int new_m, int new_n)
+// {
+// 	assert(new_m*new_n >= m.mSize_c*m.mSize_r);
+// 	return m;
+// }
+
+
+
 //definition of the matrix operation =
 Matrix& Matrix::operator=(const Matrix& m)
 {
@@ -965,14 +989,4 @@ Matrix diag(const Vector& v, int k)
 	return D;
 }
 
-// Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol)
-// {
-// 	assert(A.mSize_r == A.mSize_c);
-// 	int iter = 0;
-// 	int flag = 0;
-// 	double norm_b = norm(b);
-// 	Vector r = b - A*x0;
-	
 
-// 	return r;
-// }
