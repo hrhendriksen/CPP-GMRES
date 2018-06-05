@@ -759,11 +759,40 @@ double det(const Matrix& m)
 }
 
 // Reshape matrix, only allow if the new matrix is equal or bigger in size (otherwise info. is lost)
-// Matrix reshape(const Matrix& m, int new_m, int new_n)
-// {
-// 	assert(new_m*new_n >= m.mSize_c*m.mSize_r);
-// 	return m;
-// }
+Matrix reshape(const Matrix& m, int new_m, int new_n)
+{
+	int min_rows;
+	int min_columns;
+
+	if (m.mSize_r < new_m)
+	{
+		min_rows = m.mSize_r;
+	}
+	else
+	{
+		min_rows = new_m;
+	}
+
+	if(m.mSize_c < new_n)
+	{
+		min_columns = m.mSize_c;
+	}
+	else
+	{
+		min_columns = new_n;
+	}
+	
+	Matrix new_matrix(new_m,new_n);
+	for (int i = 0; i < min_rows; ++i)
+	{
+		for (int j = 0; j < min_columns; ++j)
+		{
+			new_matrix.mData[i][j] = m.mData[i][j];
+		}
+	}
+
+	return new_matrix;
+}
 
 
 

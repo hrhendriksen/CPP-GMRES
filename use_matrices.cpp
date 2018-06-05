@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 	double d[4] = {2,4,5,2};
 	Vector d2(d,4);
 
-	print(a_matrix);
+	print(c_matrix);
 	std::cout<<"------------------------------ \n";
 	// print();
 	// std::cout<<"------------------------------ \n";
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 	Vector b(d, 4);
 	Matrix kk(b);
 	std::cout<<"----------------KK-------------- \n";
-	print(kk);
+	print(reshape(c_matrix,5,5));
 	std::cout<<"------------------------------ \n";
 	// double cc = b.Read(2);
 	// std::cout<<cc<<"\n";

@@ -63,7 +63,7 @@ public:
 	//Create augmented matrix
 	friend Matrix create_aug(const Vector& v, const Matrix& m);
 	// Reshape matrix
-	// friend Matrix reshape(const Matrix& m, int new_m, int new_n);
+	friend Matrix reshape(const Matrix& m, int new_m, int new_n);
 	// Apply Gaussian Elimination
 	Matrix Gaussian_elimination();
 	//Solve triangular system
@@ -95,7 +95,7 @@ Matrix operator/(const Matrix& m1, const double& a);
 //Create augmented matrix
 Matrix create_aug(const Vector& v, const Matrix& m);
 // Reshape matrix
-// Matrix reshape(const Matrix& m, int new_m, int new_n);
+Matrix reshape(const Matrix& m, int new_m, int new_n);
 //Append column
 Matrix append_c(const Matrix& m, const Vector& v);
 
