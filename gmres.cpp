@@ -1,10 +1,9 @@
 #include <iostream>
-#include "Matrix.hpp"
-#include "Vector.hpp"
+#include "gmres.hpp"
 
 Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol)
 {
-	assert(A.mSize_r == A.mSize_c);
+	assert(A.GetNumberofRows() == A.GetNumberofColumns());
 
 	int iter = 0;
 
@@ -21,6 +20,6 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol)
 
 	//Now build the matrix V using the previously found v's.
 	Matrix V(v);
-
-	return v;
+	print(V);
+	return x0;
 }

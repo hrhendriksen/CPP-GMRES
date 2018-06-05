@@ -15,8 +15,8 @@ use_vectors:	use_vectors.cpp Vector.o Exception.o
 use_matrices: use_matrices.cpp Matrix.o Exception.o
 		g++ ${OPT} -o use_matrices use_matrices.cpp Vector.o Matrix.o Exception.o
 
-use_gmres: use_gmres.cpp gmres.cpp Exception.o
-	g++ ${OPT} -o use_gmres use_gmres.cpp Vector.o Matrix.o Exception.o
+use_gmres: use_gmres.cpp gmres.o Exception.o
+	g++ ${OPT} -o use_gmres use_gmres.cpp gmres.o Vector.o Matrix.o Exception.o
 
 clean:
-	rm -f *.o *~ use_vectors, use_matrices
+	rm -f *.o *~ use_vectors, use_matrices, use_gmres
