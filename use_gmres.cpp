@@ -7,14 +7,19 @@
 
 int main(int argc, char const *argv[])
 {
-	double c_values[16] = {2, 4, 3, 1,
-   						   1, 1, 0, 2,
-   						   0, 1, 1, 0,
-   						   3, 0, 1, 2};
+	double c_values[25] = {0, 0, 0, 0, 1,
+   						   1, 0, 0, 0, 1,
+   						   0, 1, 0, 0, 0,
+   						   0, 0, 1, 0, 0, 
+   						   0, 0, 0, 1, 0};
 
-	Matrix c_matrix(c_values,4,4);
-	double d[4] = {2,4,5,2};
-	Vector d2(d,4);
-	std::cout << gmres(c_matrix, d2, d2, 10, .1)<< "\n";
+	Matrix c_matrix(c_values,5,5);
+	
+	double x0a[5] = {0,0,0,0,0};
+	Vector x0(x0a,5);
+
+	double ba[5] = {1,0,0,0,0};
+	Vector b(ba,1);
+	std::cout << gmres(c_matrix, b, x0, 5, .1)<< "\n";
 	return 0;
 }

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "gmres.hpp"
 
-Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol)
+Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 {
     int n = A.GetNumberofRows();
 	assert(n == A.GetNumberofColumns());
@@ -20,30 +20,38 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol)
 	Vector v = r0/norm_r0;
 
 	Vector v_iter(n);
-	Matrix H_hat(1,1);
-	H_hat(1,1)=10;
+	Matrix H_hat(max_iter, max_iter+1);
+	Matrix V(n,max_iter);
+	for (int i = 1; i < n+1; ++i)
+	{
+		V(i,1) = v(i);
+	}
+	while(residual > tol && iter < max_iter)
+	{		
+	 // Do step k of Arnoldi
+		Vector w = A * v;
+		for (int j = 1; j < iter+1; ++j)
+		{
+			H_hat(j,iter) = v * w;
+			//
+			for (int k = 1; k < n+1 ; ++k)
+			{
+				w(k) -= H_hat(j,iter)*V(k,j);
+			}
+		}
+	H_hat(iter+1,iter) = norm(w);
 
-	while(residual > tol && iter < max_it)
-	{	
-		std::cout<<"------------------------------------\n";
-		Matrix new_H_hat = reshape(H_hat, iter+1, iter);
-		print(new_H_hat);
-		H_hat.~Matrix();
-		Matrix H_hat(new_H_hat);
+	for (int i = 1; i < n+1; ++i)
+	{
+		V(i,iter+1) = w(i)/H_hat(iter+1,iter);
+	}
 
-	 // // Do step k of Arnoldi
-		// Vector w = A * v;
-		// for (int j = 1; j < iter+1; ++j)
-		// {
-		// 	std::cout << "v*w is " << v*w << "\n";
-		// 	H_hat(j,iter) = v * w;
-		// }
-	
-
-
-
-
-		iter +=1;
+	std::cout << "i is "<<iter<<"\n";
+	std::cout << "H_hat is :\n";
+	print(H_hat);
+	std::cout << "V is :\n";
+	print(V);
+	iter +=1;
 	}
 	return v;
 }
