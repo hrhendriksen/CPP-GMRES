@@ -20,16 +20,25 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol)
 	Vector v = r0/norm_r0;
 
 	Vector v_iter(n);
+	Matrix H_hat(1,1);
+	H_hat(1,1)=10;
 
 	while(residual > tol && iter < max_it)
-	{
-		Matrix H(iter, iter+1);
-	 // Do step k of Arnoldi
-		Vector w = A * v;
-		for (int j = 1; j < iter; ++j)
-		{
-			continue;
-		}
+	{	
+		std::cout<<"------------------------------------\n";
+		Matrix new_H_hat = reshape(H_hat, iter+1, iter);
+		print(new_H_hat);
+		H_hat.~Matrix();
+		Matrix H_hat(new_H_hat);
+
+	 // // Do step k of Arnoldi
+		// Vector w = A * v;
+		// for (int j = 1; j < iter+1; ++j)
+		// {
+		// 	std::cout << "v*w is " << v*w << "\n";
+		// 	H_hat(j,iter) = v * w;
+		// }
+	
 
 
 

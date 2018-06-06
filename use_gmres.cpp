@@ -15,6 +15,6 @@ int main(int argc, char const *argv[])
 	Matrix c_matrix(c_values,4,4);
 	double d[4] = {2,4,5,2};
 	Vector d2(d,4);
-	std::cout << gmres(c_matrix, d2, d2, 100, .1)<< "\n";
+	std::cout << gmres(c_matrix, d2, d2, 10, .1)<< "\n";
 	return 0;
 }
