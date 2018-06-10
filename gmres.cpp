@@ -60,8 +60,13 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 
 		for (int j = 1; j < iter+1; ++j)
 		{
-			H(j,iter) = v * w;
-			//
+
+			for (int i = 1; i < n+1; ++i)
+			{
+				H(j,iter) += w(i)*V(i,j);
+			}
+			
+
 			for (int k = 1; k < n+1 ; ++k)
 			{
 				w(k) -= H(j,iter)*V(k,j);
@@ -134,7 +139,8 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 		{
 			y(i) = y_temp(i);
 		}
-		std::cout<<"==========================================\n";
+		std::cout<<"============================================================================\n";
+		std::cout<<"============================================================================\n";
 		iter +=1;
 	}
 	 Vector delta_x(n);
@@ -145,7 +151,7 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	 		delta_x(i) += V(i,j)*y(j);
 	 	}
 	 }
-	std::cout<< "The vector of residuals: "<< residuals << "\n";
+	std::cout<< "The vector of residuals: "<< reshape(residuals,dimension+2) << "\n";
 
 	return x0 + delta_x;
 }

@@ -42,7 +42,7 @@ int main(int argc, char const *argv[])
 	double barr_2[5] = {1,0,3,-0.1,2};
 	Vector b_2(barr_2,5);
 
-	Vector sol_2 = gmres(A_2, b_2, x0_2, 7, .1);	
+	Vector sol_2 = gmres(A_2, b_2, x0_2, 10, .1);	
 	std::cout << "The solution of the problem " << sol_2 << "\n";
 	std::cout << "Test : "<< b_2-A_2*sol_2 <<"\n";
 
