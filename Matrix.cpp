@@ -672,15 +672,15 @@ Matrix create_aug(const Vector& v, const Matrix& m)
 		{
 			if(j<m.mSize_c+1){
 					aug(i,j) = m.mData[i-1][j-1];
-					std::cout<<aug(i,j)<<"\t";
+					// std::cout<<aug(i,j)<<"\t";
 					}
 			else if(j == m.mSize_c+1)
 				{
 				aug(i,j) = v.Read(i);
-				std::cout<<aug(i,j)<<"\t";
+				// std::cout<<aug(i,j)<<"\t";
 				}
 		}
-			std::cout<<"\n";
+			// std::cout<<"\n";
 	}
 	return aug;
 }
@@ -864,15 +864,15 @@ Matrix Matrix::Gaussian_elimination()
 	int m = mSize_r;
 	int n = mSize_c;
 
-	std::cout << "Gaussian_elimination started with m is"<< m <<"\n";
-	for(int pp=0; pp<m; pp++)
-		{
-			for (int kk = 0; kk < n; ++kk)
-			{
-				std::cout << mData[pp][kk] << "\t";
-			}
-			std::cout << "\n";
-		}
+	// std::cout << "Gaussian_elimination started with m is"<< m <<"\n";
+	// for(int pp=0; pp<m; pp++)
+	// 	{
+	// 		for (int kk = 0; kk < n; ++kk)
+	// 		{
+	// 			std::cout << mData[pp][kk] << "\t";
+	// 		}
+	// 		std::cout << "\n";
+	// 	}
 	int h = 0;
 	int k = 0;
 	while( h<m and k<m)
@@ -908,16 +908,16 @@ Matrix Matrix::Gaussian_elimination()
 					mData[max_p][ll] = ph[ll];
 				}
 			}
-			std::cout << "___________________ \n";
+			// std::cout << "___________________ \n";
 	
-			for(int pp=0; pp<m; pp++)
-			{
-				for (int kk = 0; kk < n; ++kk)
-				{
-					std::cout << mData[pp][kk] << "\t";
-				}
-				std::cout << "\n";
-			}
+			// for(int pp=0; pp<m; pp++)
+			// {
+			// 	for (int kk = 0; kk < n; ++kk)
+			// 	{
+			// 		std::cout << mData[pp][kk] << "\t";
+			// 	}
+			// 	std::cout << "\n";
+			// }
 
 
 			if(mData[h][k]!=0)
@@ -932,16 +932,16 @@ Matrix Matrix::Gaussian_elimination()
 					}
 				}
 			}
-			std::cout << "___________________ \n";
+			// std::cout << "___________________ \n";
 			
-			for(int pp=0; pp<m; pp++)
-			{
-				for (int kk = 0; kk < n; ++kk)
-				{
-					std::cout << mData[pp][kk] << "\t";
-				}
-				std::cout << "\n";
-			}
+			// for(int pp=0; pp<m; pp++)
+			// {
+			// 	for (int kk = 0; kk < n; ++kk)
+			// 	{
+			// 		std::cout << mData[pp][kk] << "\t";
+			// 	}
+			// 	std::cout << "\n";
+			// }
 
 			k+=1;
 			h+=1;
@@ -960,10 +960,10 @@ Matrix Matrix::Gaussian_elimination()
 
 Vector Matrix::solve_triangular()
 {
-	std::cout<<"solve_triangular\n";
+	// std::cout<<"solve_triangular\n";
 	int n = mSize_c;
 	int m = mSize_r;
-	std::cout<<"number of columns: "<< n << "\n";
+	// std::cout<<"number of columns: "<< n << "\n";
 	// std::cout<<"number of rows: "<< m << "\n";
 
 	// std::cout<<"(2,2) entry"<<GE.mData[2][2]<<"\n";
@@ -981,7 +981,7 @@ Vector Matrix::solve_triangular()
 		}
 		// std::cout << GE.mData[1][3]
 	}
-	std::cout<<"_._._._._._._. \n";
+	// std::cout<<"_._._._._._._. \n";
 	for(int fin = 0; fin<m; fin++)
 	{
 		// std::cout << x[fin]<<"\n";

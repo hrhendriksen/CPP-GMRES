@@ -11,18 +11,27 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 
 	// Calculate initial residual r0
 	Vector r0 = b - A*x0;
+	std::cout << "r0 is :"<<r0<<"\n";	
 	double norm_r0 = norm(r0);
-	double residual = norm_r0;
+	std::cout << norm_r0;
+
+	double error = norm_r0;
+	int dimension;
+
+	Vector residuals(max_iter);
+	Vector y(max_iter+1);
+	residuals(1) = error;
 
 	// Beta vector
 	Vector beta(n+1);
 	beta(1) = norm_r0;
-	if (residual<tol)
+	if (error<tol)
 	{
 		return x0;
 	}
 
-	Vector v = r0/residual;
+	Vector v = r0/error;
+	std::cout<< "v is :"<<v<<"\n";	
 
 	// Vector v_iter(n);
 	Matrix H(max_iter, max_iter+1);
@@ -36,7 +45,7 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	Vector cosine(max_iter);
 	Vector sine(max_iter);
 
-	while(residual > tol && iter < max_iter)
+	while(error > tol && iter < max_iter)
 	{		
 	 // Do step k of Arnoldi
 
@@ -58,71 +67,87 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 				w(k) -= H(j,iter)*V(k,j);
 			}
 		}
-	H(iter+1,iter) = norm(w);
+		H(iter+1,iter) = norm(w);
 
-	for (int i = 1; i < n+1; ++i)
-	{
-		V(i,iter+1) = w(i)/H(iter+1,iter);
+		for (int i = 1; i < n+1; ++i)
+		{
+			V(i,iter+1) = w(i)/H(iter+1,iter);
+		}
+
+		std::cout << "i is "<<iter<<"\n";
+		std::cout << "H is :\n";
+		print(H);
+		std::cout << "V is :\n";
+		print(V);
+		std::cout << "Now solve LLS:\n";
+
+		// Apply Gives rotation to H
+		double temp;
+		for (int i = 1; i < iter; ++i)
+		{
+			temp = cosine(i)*H(i,iter)+sine(i)*H(i+1,iter);
+			H(i+1, iter) = -sine(i) * H(i,iter)+cosine(i)*H(i+1,iter);
+			H(i,iter) = temp;
+		}
+
+		double rho;
+		rho = H(iter,iter);
+
+		double sigma;
+		sigma = H(iter+1,iter);
+
+		angle ang  = Givens(rho, sigma);
+		// std::cout<<"Rho, Sigma"<< rho<< " , "<< sigma<<"\n";
+		
+		cosine(iter) = ang.cos;
+		sine(iter) = ang.sin;
+		std::cout<<"Hypothetical angles "<< cosine(iter) << " and " << sine(iter) <<"\n";
+
+		// Recent Givens rotation
+		H(iter,iter) = cosine(iter)*H(iter,iter)+sine(iter)*H(iter+1,iter);
+		H(iter+1,iter) = 0;
+		// Now we must have a triangular H
+		std::cout << "Now H triangular \n";
+		print(H);
+		// std::cout<<"debugFLAG\n";
+
+		beta(iter+1) = -sine(iter)*beta(iter);
+		beta(iter) = cosine(iter)*beta(iter);
+		error = std::fabs(beta(iter+1));
+	 	residuals(iter+1) = error;
+	 
+		std::cout<<"first form of beta: "<<beta<<"\n";
+		std::cout<<"restricted form of beta" << reshape(beta,iter) << "\n";
+
+		Matrix R = reshape(H, iter, iter);
+		
+		// std::cout<<"debugFLAG\n";
+		std::cout<<"Turn it into a square matrix, R is: \n";
+		print(R);
+		Vector g_n = reshape(beta, iter);
+		std::cout<<"g_n is"<<g_n<<"\n";
+
+		Vector y_temp = R/g_n;
+		std::cout<< "Y IS -->" << y_temp << "\n";
+		dimension = length(y_temp);
+		for (int i = 1; i < dimension + 1; ++i)
+		{
+			y(i) = y_temp(i);
+		}
+		std::cout<<"==========================================\n";
+		iter +=1;
 	}
+	 Vector delta_x(n);
+	 for (int i = 1; i < n+1; ++i)
+	 {
+	 	for (int j = 1; j < dimension+1; ++j)
+	 	{
+	 		delta_x(i) += V(i,j)*y(j);
+	 	}
+	 }
+	std::cout<< "The vector of residuals: "<< residuals << "\n";
 
-	std::cout << "i is "<<iter<<"\n";
-	std::cout << "H is :\n";
-	print(H);
-	// std::cout << "V is :\n";
-	// print(V);
-	std::cout << "Now solve LLS:\n";
-
-	// Apply Gives rotation to H
-	double temp;
-	for (int i = 1; i < iter; ++i)
-	{
-		temp = cosine(i)*H(i,iter)+sine(i)*H(i+1,iter);
-		H(i+1, iter) = -sine(i) * H(i,iter)+cosine(i)*H(i+1,iter);
-		H(i,iter) = temp;
-	}
-
-	double rho;
-	rho = H(iter,iter);
-
-	double sigma;
-	sigma = H(iter+1,iter);
-
-	angle ang  = Givens(rho, sigma);
-	// std::cout<<"Rho, Sigma"<< rho<< " , "<< sigma<<"\n";
-	
-	cosine(iter) = ang.cos;
-	sine(iter) = ang.sin;
-	// std::cout<<"Hypothetical angles "<< cosine(iter) << " and " << sine(iter) <<"\n";
-
-	// Recent Givens rotation
-	H(iter,iter) = cosine(iter)*H(iter,iter)+sine(iter)*H(iter+1,iter);
-	H(iter+1,iter) = 0;
-	// Now we must have a triangular H
-	std::cout << "Now H triangular \n";
-	print(H);
-	// std::cout<<"debugFLAG\n";
-
-	beta(iter+1) = -sine(iter)*beta(iter);
-	beta(iter) = cosine(iter)*beta(iter);
-
-	std::cout<<"first form of beta: "<<beta<<"\n";
-	
-	Matrix R = reshape(H, iter, iter);
-
-	std::cout<<"restricted form of beta" << reshape(beta,iter) << "\n";
-	std::cout<<"debugFLAG\n";
-	std::cout<<"Turn it into a square matrix, R is: \n";
-	print(R);
-	Vector g_n = reshape(beta, iter);
-	std::cout<<"g_n is"<<g_n<<"\n";
-
-	Vector y = R/g_n;
-	std::cout<< "Y IS -->" << y << "\n";
-
-	iter +=1;
-	}
-
-	return x0;
+	return x0 + delta_x;
 }
 
 angle Givens(double rho, double sigma) {
@@ -143,5 +168,3 @@ angle Givens(double rho, double sigma) {
     angle stru = {cos, sin};
     return stru;
 }
-
-

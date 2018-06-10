@@ -296,7 +296,7 @@ Vector operator/(const Vector& v, const double& a)
 
   for (int i=0; i<v.mSize; i++)
     {
-      w.mData[i] = v.mData[i] / a;
+      w.mData[i] = v.mData[i] / (double)a;
     }
 
   return w;
