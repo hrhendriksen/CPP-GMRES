@@ -19,7 +19,7 @@ int main(int argc, char const *argv[])
 	Vector x0(x0a,5);
 
 	double ba[5] = {1,0,0,0,0};
-	Vector b(ba,1);
-	std::cout << gmres(c_matrix, b, x0, 5, .1)<< "\n";
+	Vector b(ba,5);
+	std::cout << gmres(c_matrix, b, x0, 6, .1)<< "\n";
 	return 0;
 }
