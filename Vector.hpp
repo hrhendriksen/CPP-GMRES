@@ -66,6 +66,7 @@ public:
    // functions that are friends
    friend double norm(Vector& v, int p);
    friend Vector size(const Vector& v);
+   friend Vector reshape(const Vector& v, int new_m);
 };
 
 // All "friend" external operators and functions are declared as friend inside the class
@@ -77,6 +78,7 @@ double operator*(const Vector& v1, const Vector& v2);
 Vector operator*(const Vector& v, const double& a);
 Vector operator*(const double& a, const Vector& v);
 Vector operator/(const Vector& v, const double& a);
+Vector reshape(const Vector& v, int new_m);
 int length(const Vector& v);
 
 // Unary operator

@@ -18,6 +18,7 @@ int main(int argc, char* argv[])
   assert ( a_vector.norm(3) == norm(a_vector, 3));
 
   std::cout << "a_vector = " << a_vector << "\n";
+  std::cout << "reshaped a_vector" << reshape(a_vector, 6) << "\n";
 
   Vector bigger_vector(3);
   Vector smaller_vector(1);

@@ -864,10 +864,14 @@ Matrix Matrix::Gaussian_elimination()
 	int m = mSize_r;
 	int n = mSize_c;
 
-	std::cout << "Gaussian_elimination started with n is"<< m <<"\n";
+	std::cout << "Gaussian_elimination started with m is"<< m <<"\n";
 	for(int pp=0; pp<m; pp++)
 		{
-			std::cout << mData[pp][0] << "\t" << mData[pp][1]<<"\t"<< mData[pp][2]<< "\t"<< mData[pp][3]<<"\n";
+			for (int kk = 0; kk < n; ++kk)
+			{
+				std::cout << mData[pp][kk] << "\t";
+			}
+			std::cout << "\n";
 		}
 	int h = 0;
 	int k = 0;
@@ -905,9 +909,14 @@ Matrix Matrix::Gaussian_elimination()
 				}
 			}
 			std::cout << "___________________ \n";
+	
 			for(int pp=0; pp<m; pp++)
 			{
-				std::cout << mData[pp][0] << "\t" << mData[pp][1]<<"\t"<< mData[pp][2]<< "\t"<< mData[pp][3]<<"\n";
+				for (int kk = 0; kk < n; ++kk)
+				{
+					std::cout << mData[pp][kk] << "\t";
+				}
+				std::cout << "\n";
 			}
 
 
@@ -924,9 +933,14 @@ Matrix Matrix::Gaussian_elimination()
 				}
 			}
 			std::cout << "___________________ \n";
+			
 			for(int pp=0; pp<m; pp++)
 			{
-				std::cout << mData[pp][0] << "\t" << mData[pp][1]<<"\t"<< mData[pp][2]<< "\t"<< mData[pp][3]<<"\n";
+				for (int kk = 0; kk < n; ++kk)
+				{
+					std::cout << mData[pp][kk] << "\t";
+				}
+				std::cout << "\n";
 			}
 
 			k+=1;
@@ -992,6 +1006,12 @@ Matrix eye(int n)
 	}
 	Matrix I(data,n,n);
 	return I;
+}
+
+Matrix zeros(int m, int n)
+{
+	Matrix M(m,n);
+	return M;
 }
 
 Matrix diag(const Vector& v, int k)

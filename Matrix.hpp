@@ -107,6 +107,7 @@ Matrix operator-(const Matrix& m);
 Vector size(const Matrix& m);
 
 Matrix eye(int n);
+Matrix zeros(int m, int n);
 Matrix diag(const Vector& v,int n);
 
 void print(const Matrix& m);

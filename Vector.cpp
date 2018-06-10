@@ -441,3 +441,23 @@ int length(const Vector& v)
 {
   return v.mSize;
 }
+
+Vector reshape(const Vector& v, int new_m)
+{
+  int min_rows;
+  if (v.mSize < new_m)
+  {
+    min_rows = v.mSize;
+  }
+  
+  else
+  {
+    min_rows = new_m;
+  }
+  Vector new_vec(new_m);
+  for (int i = 0; i < min_rows; ++i)
+  {
+    new_vec.mData[i] = v.mData[i];     
+  }
+  return new_vec;
+}
