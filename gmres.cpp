@@ -11,9 +11,9 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 
 	// Calculate initial residual r0
 	Vector r0 = b - A*x0;
-	std::cout << "r0 is :"<<r0<<"\n";	
+	// std::cout << "r0 is :"<<r0<<"\n";	
 	double norm_r0 = norm(r0);
-	std::cout << norm_r0;
+	// std::cout << norm_r0;
 
 	double error = norm_r0;
 	int dimension;
@@ -31,7 +31,7 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	}
 
 	Vector v = r0/error;
-	std::cout<< "v is :"<<v<<"\n";	
+	// std::cout<< "v is :"<<v<<"\n";	
 
 	// Vector v_iter(n);
 	Matrix H(max_iter, max_iter+1);
@@ -80,10 +80,10 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 		}
 
 		std::cout << "i is "<<iter<<"\n";
-		std::cout << "H is :\n";
-		print(H);
-		std::cout << "V is :\n";
-		print(V);
+		// std::cout << "H is :\n";
+		// print(H);
+		// std::cout << "V is :\n";
+		// print(V);
 		std::cout << "Now solve LLS:\n";
 
 		// Apply Gives rotation to H
@@ -106,14 +106,14 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 		
 		cosine(iter) = ang.cos;
 		sine(iter) = ang.sin;
-		std::cout<<"Hypothetical angles "<< cosine(iter) << " and " << sine(iter) <<"\n";
+		// std::cout<<"Hypothetical angles "<< cosine(iter) << " and " << sine(iter) <<"\n";
 
 		// Recent Givens rotation
 		H(iter,iter) = cosine(iter)*H(iter,iter)+sine(iter)*H(iter+1,iter);
 		H(iter+1,iter) = 0;
 		// Now we must have a triangular H
-		std::cout << "Now H triangular \n";
-		print(H);
+		// std::cout << "Now H triangular \n";
+		// print(H);
 		// std::cout<<"debugFLAG\n";
 
 		beta(iter+1) = -sine(iter)*beta(iter);
@@ -121,19 +121,20 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 		error = std::fabs(beta(iter+1));
 	 	residuals(iter+1) = error;
 	 
-		std::cout<<"first form of beta: "<<beta<<"\n";
-		std::cout<<"restricted form of beta" << reshape(beta,iter) << "\n";
+		// std::cout<<"first form of beta: "<<beta<<"\n";
+		// std::cout<<"restricted form of beta" << reshape(beta,iter) << "\n";
 
 		Matrix R = reshape(H, iter, iter);
 		
 		// std::cout<<"debugFLAG\n";
-		std::cout<<"Turn it into a square matrix, R is: \n";
-		print(R);
+		// std::cout<<"Turn it into a square matrix, R is: \n";
+		// print(R);
 		Vector g_n = reshape(beta, iter);
-		std::cout<<"g_n is"<<g_n<<"\n";
-
+		// std::cout<<"g_n is"<<g_n<<"\n";
+		std::cout << "before \n";
 		Vector y_temp = R/g_n;
-		std::cout<< "Y IS -->" << y_temp << "\n";
+		std::cout << "after \n";
+		// std::cout<< "Y IS -->" << y_temp << "\n";
 		dimension = length(y_temp);
 		for (int i = 1; i < dimension + 1; ++i)
 		{
@@ -151,7 +152,7 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	 		delta_x(i) += V(i,j)*y(j);
 	 	}
 	 }
-	std::cout<< "The vector of residuals: "<< reshape(residuals,dimension+2) << "\n";
+	// std::cout<< "The vector of residuals: "<< reshape(residuals,dimension+2) << "\n";
 
 	return x0 + delta_x;
 }

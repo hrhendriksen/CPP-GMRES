@@ -53,6 +53,10 @@ int main(int argc, char const *argv[])
 	int matrix_size;
 	std::cout<<"What matrix size do you want?\n";
 	std::cin >> matrix_size;
+
+	int max_iter;
+	std::cout<<"How many GMRES iterations, would you maximally like?\n";
+	std::cin >> max_iter;
 	
 	double A_3_values[int(pow(matrix_size,2))];
 	double barr_3[matrix_size];
@@ -81,7 +85,7 @@ int main(int argc, char const *argv[])
 	std::cout<<"========== b ============= is \n";
 	std::cout<< b_3 << "\n";
 	
-	Vector sol_3 = gmres(A_3, b_3, x0_3, 10, 1e-5);
+	Vector sol_3 = gmres(A_3, b_3, x0_3, max_iter+1, 1e-5);
 	std::cout << "The solution of the problem " << sol_3 << "\n";
 	std::cout << "Test : "<< b_3-A_3*sol_3 <<"\n";
 
