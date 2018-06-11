@@ -50,6 +50,12 @@ sparse_trid::~sparse_trid()
 	delete[] subdiagonal;
 }
 
+// Function to get number of rows of matrix
+int sparse_trid::GetNumberofRows() const
+{
+	return mSize;
+}
+
 void print(const sparse_trid& S)
 {
 	std::cout<<"superdiagonal: \n";
@@ -93,16 +99,13 @@ Vector operator*(const sparse_trid& S, Vector& v)
 {
 	assert(S.mSize == length(v));
 	Vector product(S.mSize);
-
-	for (int i = 0; i < S.mSize; ++i)
-	{
-		for (int j = -1; i < j; ++i)
-		{
-			std::cout<<std::max(i,0);	
-		}
+	product(1) = S.diagonal[0]*v(1)+S.superdiagonal[1]*v(2);
+	for (int i = 2; i < S.mSize; ++i)
+	{	
+		product(i)=v(i-1)*S.subdiagonal[i-2]+v(i)*S.diagonal[i-1]+v(i+1)*S.superdiagonal[i];
 	}
-
-	return v;
+	product(S.mSize) = S.diagonal[S.mSize-1]*v(S.mSize)+S.subdiagonal[S.mSize-2]*v(S.mSize-1);
+	return product;
 }
 
 //copy constructor

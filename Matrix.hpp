@@ -30,6 +30,9 @@ public:
 	// Destructor
 	~sparse_trid();
 
+	//Function to get n
+	int GetNumberofRows() const;
+
 	friend void print(const sparse_trid& S);
 	friend Vector operator*(const sparse_trid& S, Vector& v);
 };

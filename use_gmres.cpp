@@ -10,7 +10,7 @@
 
 int main(int argc, char const *argv[])
 {
-	/* Testcase 1*/
+	/* Testcase 1; example from the NLA course*/
 	// double A_1_values[25] = 
 	// {0, 0, 0, 0, 1,
  //   	 1, 0, 0, 0, 0,
@@ -29,7 +29,7 @@ int main(int argc, char const *argv[])
 	// Vector res = b_1-A_1*sol_1;
 	// std::cout << "Test : "<<  norm(res) <<"\n";
 
-	/* Testcase 2*/
+	/* Testcase 2 - a less trivial 5x5 example*/
 	// double A_2_values[25] =
 	// {7,	3,	8,  2,	4,	 
 	// 12,	13,	9,	10,	5,
@@ -50,45 +50,67 @@ int main(int argc, char const *argv[])
 	// Vector res = b_2-A_2*sol_2;
 	// std::cout << "Test : "<<  norm(res) <<"\n";
 
-	/* Testcase 3*/
-	int matrix_size;
-	std::cout<<"What matrix size do you want?\n";
-	std::cin >> matrix_size;
+	/* Testcase 3 - a random non sparse test example*/
+	// int matrix_size;
+	// std::cout<<"What matrix size do you want?\n";
+	// std::cin >> matrix_size;
 
-	int max_iter;
-	std::cout<<"How many GMRES iterations, would you maximally like?\n";
-	std::cin >> max_iter;
+	// int max_iter;
+	// std::cout<<"How many GMRES iterations, would you maximally like?\n";
+	// std::cin >> max_iter;
 	
-	double A_3_values[int(pow(matrix_size,2))];
-	double barr_3[matrix_size];
-	double x0arr_3[matrix_size];
+	// double A_3_values[int(pow(matrix_size,2))];
+	// double barr_3[matrix_size];
+	// double x0arr_3[matrix_size];
 
-	srand(1);
-	for (int i = 0; i < int(pow(matrix_size,2)); ++i)
-	{
-		A_3_values[i] = rand()%10+1;
-	}	
+	// srand(1);
+	// for (int i = 0; i < int(pow(matrix_size,2)); ++i)
+	// {
+	// 	A_3_values[i] = rand()%10+1;
+	// }	
 
-	for (int i = 0; i < matrix_size; ++i)
+	// for (int i = 0; i < matrix_size; ++i)
+	// {
+	// 	barr_3[i] = rand()%10+1;
+	// 	x0arr_3[i] = rand()%10+1;
+	// }
+
+	// Matrix A_3(A_3_values, matrix_size, matrix_size);
+	// // std::cout<<"========GMRES with A is ========\n";
+	// // print(A_3);
+	// Vector x0_3(x0arr_3, matrix_size);
+	// // std::cout<<"========== x0 ============= is \n";
+	// // std::cout<< x0_3 << "\n";
+	// Vector b_3(barr_3, matrix_size);
+	// // std::cout<<"========== b ============= is \n";
+	// // std::cout<< b_3 << "\n";
+	
+	// Vector sol_3 = gmres(A_3, b_3, x0_3, max_iter+1, 1e-6);
+	// std::cout << "The solution of the problem " << sol_3 << "\n";
+	// Vector res = b_3-A_3*sol_3;
+	// std::cout << "Test : "<<  norm(res) <<"\n";
+
+	/* Testcase 4 - a sparse test case*/
+	int max_iter = 100;
+	int testsize = 100;
+	double a[testsize-1];
+	double b[testsize];
+	double c[testsize-1];
+	for (int i = 0; i < testsize; ++i)
 	{
-		barr_3[i] = rand()%10+1;
-		x0arr_3[i] = rand()%10+1;
+		a[std::max(0,i-1)] = rand()%10+1;
+		b[i] =  rand()%10+1;
+		c[std::max(0,i-1)] = rand()%10+1;
 	}
+	sparse_trid A_sp(testsize, a,b,c);
+	// print(SpMa);
+	Vector x0_sp(b,testsize);
+	Vector b_sp(b,testsize);
 
-	Matrix A_3(A_3_values, matrix_size, matrix_size);
-	// std::cout<<"========GMRES with A is ========\n";
-	// print(A_3);
-	Vector x0_3(x0arr_3, matrix_size);
-	// std::cout<<"========== x0 ============= is \n";
-	// std::cout<< x0_3 << "\n";
-	Vector b_3(barr_3, matrix_size);
-	// std::cout<<"========== b ============= is \n";
-	// std::cout<< b_3 << "\n";
-	
-	Vector sol_3 = gmres(A_3, b_3, x0_3, max_iter+1, 1e-6);
-	std::cout << "The solution of the problem " << sol_3 << "\n";
-	Vector res = b_3-A_3*sol_3;
-	std::cout << "Test : "<<  norm(res) <<"\n";
+	Vector sol_sp = gmres(A_sp, b_sp, x0_sp, max_iter+1, 1e-6);
+	std::cout << "The solution of the problem " << sol_sp << "\n";
+	Vector res_sp = b_sp-A_sp*sol_sp;
+	std::cout << "Test : "<<  norm(res_sp) <<"\n";
 
 	return 0;
 }

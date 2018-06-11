@@ -58,13 +58,13 @@ int main(int argc, char* argv[])
 	// Vector zz = c_matrix/b;
 	// std::cout << gmres(c_matrix, d2, d2, 10,10)<< "\n";
 	sparse_trid KKK(3);
-	double az[2] = {1,2};
-	double bz[3] = {4,9,3};
-	double cz[2] = {4,4};
-	sparse_trid LLL(3,az,bz,cz);
-	Vector LVL(bz,3);
+	double az[16] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+	double bz[17] = {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2};
+	double cz[16] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+	sparse_trid LLL(17,az,bz,cz);
+	// print(LLL);
+	Vector LVL(bz,17);
 	Vector product = LLL*LVL;
 	std::cout << product << "\n";
-
 	return 0;
 }
