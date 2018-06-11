@@ -8,7 +8,6 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	assert(n == A.GetNumberofColumns());
 
 	int iter = 1;
-
 	// Calculate initial residual r0
 	Vector r0 = b - A*x0;
 	// std::cout << "r0 is :"<<r0<<"\n";	
@@ -16,10 +15,10 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	// std::cout << norm_r0;
 
 	double error = norm_r0;
-	int dimension;
 
 	Vector residuals(max_iter);
 	Vector y(max_iter+1);
+	// Vector z(max_iter+1);
 	residuals(1) = error;
 
 	// Beta vector
@@ -80,11 +79,13 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 		}
 
 		std::cout << "i is "<<iter<<"\n";
+
 		// std::cout << "H is :\n";
 		// print(H);
+
 		// std::cout << "V is :\n";
 		// print(V);
-		std::cout << "Now solve LLS:\n";
+		// std::cout << "Now solve LLS:\n";
 
 		// Apply Gives rotation to H
 		double temp;
@@ -127,32 +128,58 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 		Matrix R = reshape(H, iter, iter);
 		
 		// std::cout<<"debugFLAG\n";
-		// std::cout<<"Turn it into a square matrix, R is: \n";
-		// print(R);
+		std::cout<<"Turn it into a square matrix, R is: \n";
+		print(R);
 		Vector g_n = reshape(beta, iter);
-		// std::cout<<"g_n is"<<g_n<<"\n";
-		std::cout << "before \n";
-		Vector y_temp = R/g_n;
-		std::cout << "after \n";
+		
+		std::cout<<"g_n is"<<g_n<<"\n";
+		
+		Vector y_temp(iter);
+		
+		// Backward substitution
+		for (int i=iter; i>=1; i--)
+		{
+			std::cout << "i is"<< i << "\n";
+			y_temp(i) = g_n(i)/R(i,i);
+			// std::cout<<"running value x[i]"<<x[i]<<"\n";
+
+			for (int k=i-1; k>=1; k--)
+			{	
+			// 	std::cout << "k is"<< k << "\n";
+			// 	std::cout << "g_n(k) before"<< g_n(k)<< "\n";
+			// 	std::cout << "difference" << R(k,i) << y_temp(i) << "\n";
+				g_n(k) -= R(k,i)*y_temp(i);
+			// std::cout << "g_n(k) after"<< g_n(k) << "\n";
+			}
+		}
+
 		// std::cout<< "Y IS -->" << y_temp << "\n";
-		dimension = length(y_temp);
-		for (int i = 1; i < dimension + 1; ++i)
+		// dimension = length(y_temp);
+		for (int i = 1; i <= iter; ++i)
 		{
 			y(i) = y_temp(i);
+			// z(i) = y_backslash(i);
 		}
-		std::cout<<"============================================================================\n";
-		std::cout<<"============================================================================\n";
+		// std::cout<<"========y====================================================================\n";
+		// std::cout << y << "\n";
+		// std::cout<<"=====y from backslash=======================================================================\n";
+		// std::cout << z << "\n";
 		iter +=1;
 	}
 	 Vector delta_x(n);
-	 for (int i = 1; i < n+1; ++i)
+	 // Vector delta_x_bs(n);
+
+	 for (int i = 1; i <= n; ++i)
 	 {
-	 	for (int j = 1; j < dimension+1; ++j)
+	 	for (int j = 1; j <= iter-1; ++j)
 	 	{
 	 		delta_x(i) += V(i,j)*y(j);
+	 		// delta_x_bs(i) += V(i,j)*z(j);
 	 	}
 	 }
-	// std::cout<< "The vector of residuals: "<< reshape(residuals,dimension+2) << "\n";
+	std::cout << "Delt-x" << delta_x << "\n"; 
+	// std::cout << "Delt-x-bs" << delta_x_bs << "\n"; 
+	std::cout<< "The vector of residuals: "<< reshape(residuals,iter) << "\n";
 
 	return x0 + delta_x;
 }

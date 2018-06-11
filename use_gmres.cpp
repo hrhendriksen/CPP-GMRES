@@ -66,7 +66,6 @@ int main(int argc, char const *argv[])
 	for (int i = 0; i < int(pow(matrix_size,2)); ++i)
 	{
 		A_3_values[i] = rand()%10+1;
-		std::cout << A_3_values[i];
 	}	
 
 	for (int i = 0; i < matrix_size; ++i)
