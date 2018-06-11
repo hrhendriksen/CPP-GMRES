@@ -26,8 +26,8 @@ int main(int argc, char const *argv[])
 	// double barr_1[5] = {1,0,0,0,0};
 	// Vector b_1(barr_1,5);
 	// Vector sol_1 = gmres(A_1, b_1, x0_1, 6, .1);
-	// std::cout << "The solution of the problem " << sol_1 << "\n";
-	// std::cout << "Test : "<< b_1-A_1*sol_1 <<"\n";
+	// Vector res = b_1-A_1*sol_1;
+	// std::cout << "Test : "<<  norm(res) <<"\n";
 
 	/* Testcase 2*/
 	// double A_2_values[25] =
@@ -47,7 +47,8 @@ int main(int argc, char const *argv[])
 
 	// Vector sol_2 = gmres(A_2, b_2, x0_2, 100, 1e-5);	
 	// std::cout << "The solution of the problem " << sol_2 << "\n";
-	// std::cout << "Test : "<< b_2-A_2*sol_2 <<"\n";
+	// Vector res = b_2-A_2*sol_2;
+	// std::cout << "Test : "<<  norm(res) <<"\n";
 
 	/* Testcase 3*/
 	int matrix_size;
@@ -75,18 +76,19 @@ int main(int argc, char const *argv[])
 	}
 
 	Matrix A_3(A_3_values, matrix_size, matrix_size);
-	std::cout<<"========GMRES with A is ========\n";
-	print(A_3);
+	// std::cout<<"========GMRES with A is ========\n";
+	// print(A_3);
 	Vector x0_3(x0arr_3, matrix_size);
-	std::cout<<"========== x0 ============= is \n";
-	std::cout<< x0_3 << "\n";
+	// std::cout<<"========== x0 ============= is \n";
+	// std::cout<< x0_3 << "\n";
 	Vector b_3(barr_3, matrix_size);
-	std::cout<<"========== b ============= is \n";
-	std::cout<< b_3 << "\n";
+	// std::cout<<"========== b ============= is \n";
+	// std::cout<< b_3 << "\n";
 	
-	Vector sol_3 = gmres(A_3, b_3, x0_3, max_iter+1, 1e-5);
+	Vector sol_3 = gmres(A_3, b_3, x0_3, max_iter+1, 1e-6);
 	std::cout << "The solution of the problem " << sol_3 << "\n";
-	std::cout << "Test : "<< b_3-A_3*sol_3 <<"\n";
+	Vector res = b_3-A_3*sol_3;
+	std::cout << "Test : "<<  norm(res) <<"\n";
 
 	return 0;
 }

@@ -4,50 +4,54 @@
 
 Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 {
+	// Assert that A is a square matrix
     int n = A.GetNumberofRows();
 	assert(n == A.GetNumberofColumns());
 
+	// Initialise an iteration counter
 	int iter = 1;
+
+	// Preallocate and (possibly) initialise all used vectors and matrices:
 	// Calculate initial residual r0
 	Vector r0 = b - A*x0;
-	// std::cout << "r0 is :"<<r0<<"\n";	
-	double norm_r0 = norm(r0);
-	// std::cout << norm_r0;
+	double error = norm(r0);
 
-	double error = norm_r0;
+	// Preallocate an overall vector for the cosine and sine of the Givens rotations
+	Vector cosine(max_iter);		
+	Vector sine(max_iter);
 
-	Vector residuals(max_iter);
-	Vector y(max_iter+1);
-	// Vector z(max_iter+1);
-	residuals(1) = error;
-
-	// Beta vector
+	// Preallocate and initialise beta vector, beta = (r_0,0,0,0,0,0,0,0)
 	Vector beta(n+1);
-	beta(1) = norm_r0;
+	beta(1) = error;
+
+	// Preallocate and initialise an overall y and residuals vector
+	Vector residuals(max_iter);
+	residuals(1) = error;
+	Vector y(max_iter);
+
+
 	if (error<tol)
 	{
 		return x0;
 	}
 
-	Vector v = r0/error;
-	// std::cout<< "v is :"<<v<<"\n";	
-
-	// Vector v_iter(n);
+	// Preallocate an overall H and V matrix, set first column of V to v1
 	Matrix H(max_iter, max_iter+1);
 	Matrix V(n,max_iter);
 
+	Vector v_1 = r0/error;
+
 	for (int i = 1; i < n+1; ++i)
 	{
-		V(i,1) = v(i);
+		V(i,1) = v_1(i);
 	}
-	//Create a vector for the cosine and sine
-	Vector cosine(max_iter);
-	Vector sine(max_iter);
+
+	// Start the GMRES iteration until the desired tolerance is reached 
+	// or the maximum number of iterations have been executed.
 
 	while(error > tol && iter < max_iter)
 	{		
-	 // Do step k of Arnoldi
-
+		//Take the iter^{th} column of V
 		Vector v_iter(n);
 
 		for (int i = 1; i < n+1; ++i)
@@ -55,8 +59,10 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 			v_iter(i) = V(i,iter);
 		}
 
+		// Do step k of Arnoldi
 		Vector w = A * v_iter;
 
+		// Fill in the iter^{th} column of H
 		for (int j = 1; j < iter+1; ++j)
 		{
 
@@ -73,22 +79,17 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 		}
 		H(iter+1,iter) = norm(w);
 
+		// Fill in the iter^{th} column of V
 		for (int i = 1; i < n+1; ++i)
 		{
 			V(i,iter+1) = w(i)/H(iter+1,iter);
 		}
 
-		std::cout << "i is "<<iter<<"\n";
-
-		// std::cout << "H is :\n";
-		// print(H);
-
-		// std::cout << "V is :\n";
-		// print(V);
-		// std::cout << "Now solve LLS:\n";
-
 		// Apply Gives rotation to H
 		double temp;
+
+		// Firstly, work with the (iter-1) previous Givens rotations on the
+		// upper (iter) entries of the iter^{th} column of H
 		for (int i = 1; i < iter; ++i)
 		{
 			temp = cosine(i)*H(i,iter)+sine(i)*H(i+1,iter);
@@ -96,94 +97,76 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 			H(i,iter) = temp;
 		}
 
+		// Now find the Givens rotation for the (iter,iter) and (iter+1, iter)
+		// entries of H.
 		double rho;
 		rho = H(iter,iter);
 
 		double sigma;
 		sigma = H(iter+1,iter);
 
+		// Use the function Givens to calculate the cos and sin and returns a struc
 		angle ang  = Givens(rho, sigma);
-		// std::cout<<"Rho, Sigma"<< rho<< " , "<< sigma<<"\n";
-		
+
+		// Add these angles to your cosine and sine vector
 		cosine(iter) = ang.cos;
 		sine(iter) = ang.sin;
-		// std::cout<<"Hypothetical angles "<< cosine(iter) << " and " << sine(iter) <<"\n";
 
-		// Recent Givens rotation
+		// Apply the recent Givens rotation
 		H(iter,iter) = cosine(iter)*H(iter,iter)+sine(iter)*H(iter+1,iter);
 		H(iter+1,iter) = 0;
-		// Now we must have a triangular H
-		// std::cout << "Now H triangular \n";
-		// print(H);
-		// std::cout<<"debugFLAG\n";
 
+		// Also work with our Givens rotation on the beta = ||r_0||*e_1 vector
 		beta(iter+1) = -sine(iter)*beta(iter);
 		beta(iter) = cosine(iter)*beta(iter);
+
+		//The error will be the absolute value of the last entry of our beta vector
 		error = std::fabs(beta(iter+1));
 	 	residuals(iter+1) = error;
 	 
-		// std::cout<<"first form of beta: "<<beta<<"\n";
-		// std::cout<<"restricted form of beta" << reshape(beta,iter) << "\n";
-
+	 	// Now select the (iter,iter)-sized square part of H 
+	 	// and the upper (iter) entries of beta; g_n.
 		Matrix R = reshape(H, iter, iter);
-		
-		// std::cout<<"debugFLAG\n";
-		std::cout<<"Turn it into a square matrix, R is: \n";
-		print(R);
 		Vector g_n = reshape(beta, iter);
 		
-		std::cout<<"g_n is"<<g_n<<"\n";
-		
+		// Now locally create an (iter)-sized temporary y-vector.
 		Vector y_temp(iter);
-		
-		// Backward substitution
+
+		// Backward substitution of the triangular system: R*y = g_n
 		for (int i=iter; i>=1; i--)
 		{
-			std::cout << "i is"<< i << "\n";
 			y_temp(i) = g_n(i)/R(i,i);
-			// std::cout<<"running value x[i]"<<x[i]<<"\n";
 
 			for (int k=i-1; k>=1; k--)
 			{	
-			// 	std::cout << "k is"<< k << "\n";
-			// 	std::cout << "g_n(k) before"<< g_n(k)<< "\n";
-			// 	std::cout << "difference" << R(k,i) << y_temp(i) << "\n";
 				g_n(k) -= R(k,i)*y_temp(i);
-			// std::cout << "g_n(k) after"<< g_n(k) << "\n";
 			}
 		}
 
-		// std::cout<< "Y IS -->" << y_temp << "\n";
-		// dimension = length(y_temp);
+		// Copy your temporary y in your overall y.
 		for (int i = 1; i <= iter; ++i)
 		{
 			y(i) = y_temp(i);
-			// z(i) = y_backslash(i);
 		}
-		// std::cout<<"========y====================================================================\n";
-		// std::cout << y << "\n";
-		// std::cout<<"=====y from backslash=======================================================================\n";
-		// std::cout << z << "\n";
+
 		iter +=1;
 	}
-	 Vector delta_x(n);
-	 // Vector delta_x_bs(n);
+
+	// Calculate the final solution
+	Vector delta_x(n);
 
 	 for (int i = 1; i <= n; ++i)
 	 {
 	 	for (int j = 1; j <= iter-1; ++j)
 	 	{
 	 		delta_x(i) += V(i,j)*y(j);
-	 		// delta_x_bs(i) += V(i,j)*z(j);
 	 	}
 	 }
-	std::cout << "Delt-x" << delta_x << "\n"; 
-	// std::cout << "Delt-x-bs" << delta_x_bs << "\n"; 
-	std::cout<< "The vector of residuals: "<< reshape(residuals,iter) << "\n";
 
 	return x0 + delta_x;
 }
 
+// Helper function to calculate the entries of the Givens matrix
 angle Givens(double rho, double sigma) {
 	double cos;
 	double sin;
