@@ -124,29 +124,19 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 		error = std::fabs(beta(iter+1));
 	 	residuals(iter+1) = error;
 	 
-	 	// Now select the (iter,iter)-sized square part of H 
-	 	// and the upper (iter) entries of beta; g_n.
-		Matrix R = reshape(H, iter, iter);
-		Vector g_n = reshape(beta, iter);
-		
-		// Now locally create an (iter)-sized temporary y-vector.
-		Vector y_temp(iter);
+	 	// Now copy the upper (iter) entries of beta; g_n
+	 	// to apply backward substitution.
+		Vector g_n = cut(beta, iter);	
 
 		// Backward substitution of the triangular system: R*y = g_n
 		for (int i=iter; i>=1; i--)
 		{
-			y_temp(i) = g_n(i)/R(i,i);
+			y(i) = g_n(i)/H(i,i);
 
 			for (int k=i-1; k>=1; k--)
 			{	
-				g_n(k) -= R(k,i)*y_temp(i);
+				g_n(k) -= H(k,i)*y(i);
 			}
-		}
-
-		// Copy your temporary y in your overall y.
-		for (int i = 1; i <= iter; ++i)
-		{
-			y(i) = y_temp(i);
 		}
 
 		iter +=1;

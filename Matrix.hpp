@@ -1,14 +1,42 @@
 #ifndef MATRIXDEF
 #define MATRIXDEF
-
 //  **********************
-//  *  Class of vectors  *
+//  *  Class of matrices  *
 //  **********************
 
 //  Class written in such a way that code similar to Matlab code may be written
 #include <cmath>
 #include "Vector.hpp"
 #include "Exception.hpp"
+
+//Class of sparse tridiagonal matrices
+class sparse_trid
+{
+private:
+	//member variables
+	int mSize;    // number of rows of the matrix
+
+	double* superdiagonal;
+	double* diagonal;
+	double* subdiagonal;
+public:
+	// constructors
+	// No default constructor
+
+	//construct sparse trid matrix of given size
+	sparse_trid(int sizeVal);
+	sparse_trid(int sizeVal, double superd[], double d[], double subd[]);
+
+	// Destructor
+	~sparse_trid();
+
+	friend void print(const sparse_trid& S);
+	friend Vector operator*(const sparse_trid& S, Vector& v);
+};
+
+void print(const sparse_trid& S);
+Vector operator*(const sparse_trid& S, Vector& v);
+
 
 class Matrix
 {
@@ -63,7 +91,7 @@ public:
 	//Create augmented matrix
 	friend Matrix create_aug(const Vector& v, const Matrix& m);
 	// Reshape matrix
-	friend Matrix reshape(const Matrix& m, int new_m, int new_n);
+	friend Matrix cut(const Matrix& m, int new_m, int new_n);
 	// Apply Gaussian Elimination
 	Matrix Gaussian_elimination();
 	//Solve triangular system
@@ -79,6 +107,7 @@ public:
 	// friend std::ostream& operator<<(std::ostream& output, const Matrix& m);
 	friend double det(const Matrix& m);
 	friend Vector size(const Matrix& m);
+	friend Vector operator/(const Matrix& m, const Vector& v);
 };
 
 // All "friend" external operators and functions are declared as friend inside the class
@@ -95,7 +124,7 @@ Matrix operator/(const Matrix& m1, const double& a);
 //Create augmented matrix
 Matrix create_aug(const Vector& v, const Matrix& m);
 // Reshape matrix
-Matrix reshape(const Matrix& m, int new_m, int new_n);
+Matrix cut(const Matrix& m, int new_m, int new_n);
 //Append column
 Matrix append_c(const Matrix& m, const Vector& v);
 

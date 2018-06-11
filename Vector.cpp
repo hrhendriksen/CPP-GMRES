@@ -442,7 +442,7 @@ int length(const Vector& v)
   return v.mSize;
 }
 
-Vector reshape(const Vector& v, int new_m)
+Vector cut(const Vector& v, int new_m)
 {
   int min_rows;
   if (v.mSize < new_m)

@@ -1,5 +1,109 @@
 #include <iostream>
 #include "Matrix.hpp"
+//construct sparse trid matrix of given size
+// the first element of the superdiagonal is set to zero but is not part of the matrix,
+// the last element of the subdiagonal is set to zero but is not part of the matrix.
+sparse_trid::sparse_trid(int sizeVal)
+{
+	mSize = sizeVal;
+
+	superdiagonal = new double [sizeVal];
+	diagonal = new double [sizeVal];
+	subdiagonal = new double [sizeVal];
+
+	for (int i = 0; i < sizeVal; ++i)
+	{
+		superdiagonal[i] = 0.0;
+		diagonal[i] = 0.0;
+		subdiagonal[i] = 0.0;
+	}
+}
+
+// Construct sparse trid matrix with 3 arrays
+sparse_trid::sparse_trid(int sizeVal, double superd[], double d[], double subd[])
+{
+	mSize = sizeVal;
+
+	superdiagonal = new double [sizeVal];
+	diagonal = new double [sizeVal];
+	subdiagonal = new double [sizeVal];
+
+	superdiagonal[0] = 0.0;
+	diagonal[0] = d[0];
+	subdiagonal[0] = subd[0];
+
+	for (int i = 1; i < sizeVal-1; ++i)
+	{
+		superdiagonal[i] = superd[i-1];
+		diagonal[i]=d[i];
+		subdiagonal[i] = subd[i];
+	}
+	superdiagonal[sizeVal-1] = superd[sizeVal-2];
+	diagonal[sizeVal-1] = d[sizeVal-1];
+	subdiagonal[sizeVal-1] = 0.0;
+}
+
+sparse_trid::~sparse_trid()
+{
+	delete[] superdiagonal;
+	delete[] diagonal;
+	delete[] subdiagonal;
+}
+
+void print(const sparse_trid& S)
+{
+	std::cout<<"superdiagonal: \n";
+	std::cout<<"[";
+	for (int i = 0; i < S.mSize; ++i)
+	{
+		std::cout<<S.superdiagonal[i];
+		if (i<S.mSize-1)
+		{
+			std::cout<< ", ";
+		}
+	}
+	std::cout<<"]\n";
+
+	std::cout<<"diagonal: \n";
+	std::cout<<"[";
+	for (int i = 0; i < S.mSize; ++i)
+	{
+		std::cout<<S.diagonal[i];
+		if (i<S.mSize-1)
+		{
+			std::cout<< ", ";
+		}
+	}
+	std::cout<<"]\n";
+
+	std::cout<<"subdiagonal: \n";
+	std::cout<<"[";
+	for (int i = 0; i < S.mSize; ++i)
+	{
+		std::cout<<S.subdiagonal[i];
+		if (i<S.mSize-1)
+		{
+			std::cout<< ", ";
+		}
+	}
+	std::cout<<"]\n";
+}
+
+Vector operator*(const sparse_trid& S, Vector& v)
+{
+	assert(S.mSize == length(v));
+	Vector product(S.mSize);
+
+	for (int i = 0; i < S.mSize; ++i)
+	{
+		for (int j = -1; i < j; ++i)
+		{
+			std::cout<<std::max(i,0);	
+		}
+	}
+
+	return v;
+}
 
 //copy constructor
 Matrix::Matrix(const Matrix& m)
@@ -662,7 +766,6 @@ Vector operator*(const Vector &v, const Matrix& m)
 // Function that creates the augmented matrix from a vector and a matrix
 Matrix create_aug(const Vector& v, const Matrix& m)
 {
-	assert(m.mSize_c == m.mSize_r);
 	assert(m.mSize_r == length(v));
 	Matrix aug(m.mSize_r, m.mSize_c+1);
 
@@ -758,8 +861,8 @@ double det(const Matrix& m)
 	return determinant;
 }
 
-// Reshape matrix, only allow if the new matrix is equal or bigger in size (otherwise info. is lost)
-Matrix reshape(const Matrix& m, int new_m, int new_n)
+// Cut matrix
+Matrix cut(const Matrix& m, int new_m, int new_n)
 {
 	int min_rows;
 	int min_columns;
@@ -853,9 +956,16 @@ double& Matrix::operator()(int i, int j)
 
 Vector operator/(const Matrix& m, const Vector& v)
 {
-	assert(det(m)!= 0);
+	assert(m.mSize_c == m.mSize_r);
+
+	if (det(m)!= 0)
+	{
+		throw Exception("inverse non-existent", "Matrix is non-singular");	
+	}
+
 	Matrix augmented = create_aug(v, m);
 	Matrix check = augmented.Gaussian_elimination();
+
 	return check.solve_triangular();	
 }
 
@@ -885,29 +995,29 @@ Matrix Matrix::Gaussian_elimination()
 			{
 				max_p = l;
 			}
-			}
+		}
 	//		std::cout << max_p;
 			// Now we know what the max pivot is.
 			// swap rows
 	//		std::cout << "here";
-			if(max_p != h)
-			{
-				double ph[m+1];
-				for(int kk = 0; kk<m+1; kk++)
-					{
-						ph[kk] =mData[h][kk];
-					}
-			// std::cout << ph[0] << "\t" << ph[1]<<"\t"<< ph[2]<< "\t" << ph[3]<<"\n";
-				for(int jj = 0; jj<m+1; jj++)
+		if(max_p != h)
+		{
+			double ph[m+1];
+			for(int kk = 0; kk<m+1; kk++)
 				{
-					mData[h][jj] = mData[max_p][jj];
+					ph[kk] =mData[h][kk];
 				}
 
-				for(int ll = 0; ll<m+1; ll++)
-				{
-					mData[max_p][ll] = ph[ll];
-				}
+			for(int jj = 0; jj<m+1; jj++)
+			{
+				mData[h][jj] = mData[max_p][jj];
 			}
+
+			for(int ll = 0; ll<m+1; ll++)
+			{
+				mData[max_p][ll] = ph[ll];
+			}
+		}
 			// std::cout << "___________________ \n";
 	
 			// for(int pp=0; pp<m; pp++)
@@ -920,31 +1030,19 @@ Matrix Matrix::Gaussian_elimination()
 			// }
 
 
-			if(mData[h][k]!=0)
+		if(mData[h][k]!=0)
+		{
+			for(int mm = (h+1); mm <m; mm++)
 			{
-				for(int mm = (h+1); mm <m; mm++)
+				double AA = (mData[mm][k]/mData[h][k]);
+				for(int oo = k; oo<m+1; oo++)
 				{
-					double AA = (mData[mm][k]/mData[h][k]);
-					for(int oo = k; oo<m+1; oo++)
-					{
-	//					std::cout << "o = " << oo;
-						mData[mm][oo] = mData[mm][oo] - AA*mData[h][oo];
-					}
+					mData[mm][oo] = mData[mm][oo] - AA*mData[h][oo];
 				}
 			}
-			// std::cout << "___________________ \n";
-			
-			// for(int pp=0; pp<m; pp++)
-			// {
-			// 	for (int kk = 0; kk < n; ++kk)
-			// 	{
-			// 		std::cout << mData[pp][kk] << "\t";
-			// 	}
-			// 	std::cout << "\n";
-			// }
-
-			k+=1;
-			h+=1;
+		}
+		k+=1;
+		h+=1;
 	}
 
 	double *array = new double[m*n];
