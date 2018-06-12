@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Matrix.hpp"
+#include <fstream>
 //construct sparse trid matrix of given size
 // the first element of the superdiagonal is set to zero but is not part of the matrix,
 // the last element of the subdiagonal is set to zero but is not part of the matrix.
@@ -682,6 +683,39 @@ Matrix operator-(const Matrix& m1, const Matrix& m2)
 	}
 	return w;
 }
+
+std::ostream& operator<<(std::ostream& output, const Matrix& m) 
+{	
+  for (int i=0; i< m.mSize_r; i++)
+    { 
+    	for (int j = 0; j < m.mSize_c; ++j)
+    	{
+    		output << m.mData[i][j];
+    		if (j != m.mSize_c-1)
+			{
+				output  << "\t";
+    		}
+      		else
+			{
+				output  << std::endl;
+			}
+    	}
+    }
+  return output;  // for multiple << operators.
+}
+
+
+
+void writetoCSV(const Matrix& m)
+{
+	std::ofstream out("output.csv");
+	assert(out.is_open());
+	out << m;
+	out.close();
+	return;
+}
+
+
 
 // Function that multiplies two matrices
 Matrix operator*(const Matrix& m1, const Matrix& m2)

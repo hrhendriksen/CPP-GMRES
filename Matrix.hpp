@@ -111,6 +111,8 @@ public:
 	friend double det(const Matrix& m);
 	friend Vector size(const Matrix& m);
 	friend Vector operator/(const Matrix& m, const Vector& v);
+	friend void writetoCSV(const Matrix& m);
+	friend std::ostream& operator<<(std::ostream& output, const Matrix& m);
 };
 
 // All "friend" external operators and functions are declared as friend inside the class
@@ -141,6 +143,10 @@ Vector size(const Matrix& m);
 Matrix eye(int n);
 Matrix zeros(int m, int n);
 Matrix diag(const Vector& v,int n);
+
+std::ostream& operator<<(std::ostream& output, const Matrix& m);
+
+void writetoCSV(const Matrix& m);
 
 void print(const Matrix& m);
 double det(const Matrix& m);
