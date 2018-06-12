@@ -1,4 +1,4 @@
-all: use_vectors use_matrices use_gmres
+all: use_vectors use_matrices use_gmres solve_transport
 
 #For debugging
 OPT=-g -Wall
@@ -17,6 +17,10 @@ use_matrices: use_matrices.cpp Matrix.o Exception.o
 
 use_gmres: use_gmres.cpp gmres.o Exception.o
 	g++ ${OPT} -o use_gmres use_gmres.cpp gmres.o Vector.o Matrix.o Exception.o
+
+solve_transport: solve_transport.cpp transport.o Exception.o
+	g++ ${OPT} -o solve_transport solve_transport.cpp transport.o gmres.o Vector.o Matrix.o Exception.o
+
 
 clean:
 	rm -f *.o *~ use_vectors, use_matrices, use_gmres

@@ -91,26 +91,26 @@ int main(int argc, char const *argv[])
 	// std::cout << "Test : "<<  norm(res) <<"\n";
 
 	/* Testcase 4 - a sparse test case*/
-	int max_iter = 100;
-	int testsize = 100;
-	double a[testsize-1];
-	double b[testsize];
-	double c[testsize-1];
-	for (int i = 0; i < testsize; ++i)
-	{
-		a[std::max(0,i-1)] = rand()%10+1;
-		b[i] =  rand()%10+1;
-		c[std::max(0,i-1)] = rand()%10+1;
-	}
-	sparse_trid A_sp(testsize, a,b,c);
-	// print(SpMa);
-	Vector x0_sp(b,testsize);
-	Vector b_sp(b,testsize);
+	// int max_iter = 100;
+	// int testsize = 100;
+	// double a[testsize-1];
+	// double b[testsize];
+	// double c[testsize-1];
+	// for (int i = 0; i < testsize; ++i)
+	// {
+	// 	a[std::max(0,i-1)] = rand()%10+1;
+	// 	b[i] =  rand()%10+1;
+	// 	c[std::max(0,i-1)] = rand()%10+1;
+	// }
+	// sparse_trid A_sp(testsize, a,b,c);
+	// // print(SpMa);
+	// Vector x0_sp(b,testsize);
+	// Vector b_sp(b,testsize);
 
-	Vector sol_sp = gmres(A_sp, b_sp, x0_sp, max_iter+1, 1e-6);
-	std::cout << "The solution of the problem " << sol_sp << "\n";
-	Vector res_sp = b_sp-A_sp*sol_sp;
-	std::cout << "Test : "<<  norm(res_sp) <<"\n";
+	// Vector sol_sp = gmres(A_sp, b_sp, x0_sp, max_iter+1, 1e-6);
+	// std::cout << "The solution of the problem " << sol_sp << "\n";
+	// Vector res_sp = b_sp-A_sp*sol_sp;
+	// std::cout << "Test : "<<  norm(res_sp) <<"\n";
 
 	return 0;
 }
