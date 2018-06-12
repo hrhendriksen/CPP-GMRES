@@ -11,11 +11,15 @@
 
 int main(int argc, char const *argv[])
 {
-	//print(solve(-10,100,1,100,1)); Good agreement with exact solution.
-	//print(solve(-10,200,1,200,1));
-	// print(solve(-20,100,1,100,1));
-	// Matrix A(3,3);
-	// std::cout << A;
-	writetoCSV(solve(-100,100,1,100,1));
+	// Function that solves our transport problem with Dirichlet BC
+	// and directly writes it into the output.CSV file.
+	// The last argument lets the user choose between 3 options;
+	
+	// 1: Central Differences Sparse Matrix
+	// 2: Upwind Differences Sparse Matrix
+	// 3: Dense Upwind Differences Matrix
+
+	writetoCSV(solve(0,100,1,100,2));
+
 	return 0;
 }

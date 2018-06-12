@@ -704,8 +704,6 @@ std::ostream& operator<<(std::ostream& output, const Matrix& m)
   return output;  // for multiple << operators.
 }
 
-
-
 void writetoCSV(const Matrix& m)
 {
 	std::ofstream out("output.csv");
