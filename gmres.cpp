@@ -2,6 +2,7 @@
 #include "gmres.hpp"
 #include <cmath>
 
+
 Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 {
 	// Assert that A is a square matrix
@@ -62,7 +63,7 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 		// Do step k of Arnoldi
 		Vector w = A * v_iter;
 
-		// Fill in the iter^{th} column of H
+	// 	// Fill in the iter^{th} column of H
 		for (int j = 1; j < iter+1; ++j)
 		{
 
@@ -128,7 +129,7 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	 	// to apply backward substitution.
 		Vector g_n = cut(beta, iter);	
 
-		// Backward substitution of the triangular system: R*y = g_n
+	// 	// Backward substitution of the triangular system: R*y = g_n
 		for (int i=iter; i>=1; i--)
 		{
 			y(i) = g_n(i)/H(i,i);
@@ -154,11 +155,14 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	 }
 
 	return x0 + delta_x;
+	 // return w;
 }
 
 // Overload GMRES for sparse matrices
 Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double tol)
 {
+	clock_t t;
+	t = clock();
 	// Assert that A is a square matrix
     int n = A.GetNumberofRows();
 	// Initialise an iteration counter
@@ -307,8 +311,8 @@ Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double t
 	 }
 
 	return x0 + delta_x;
+	 // return w;
 }
-
 
 // Helper function to calculate the entries of the Givens matrix
 angle Givens(double rho, double sigma) {

@@ -18,8 +18,11 @@ int main(int argc, char const *argv[])
 	// 1: Central Differences Sparse Matrix
 	// 2: Upwind Differences Sparse Matrix
 	// 3: Dense Upwind Differences Matrix
-
-	writetoCSV(solve(0,100,1,100,2));
-
+	
+	// clock_t t;
+	// t = clock();
+	writetoCSV(solve(0,300,1,300,2));
+	// t = clock() - t;
+	// printf ("It took me %lu clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
 	return 0;
 }

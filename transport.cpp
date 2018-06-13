@@ -66,8 +66,8 @@ Matrix solve(double v, int gridpoints, double endtime, int timepoints, int metho
 
 		dia[gridpoints-1]= 1;
 	}
+
 	sparse_trid S(gridpoints,sup,dia,sub);
-	// print(S);
 	//--------------------------------------------------------------------
 
 	// Initial Condition
