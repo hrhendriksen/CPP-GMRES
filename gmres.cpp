@@ -15,7 +15,9 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	// Preallocate and (possibly) initialise all used vectors and matrices:
 	// Calculate initial residual r0
 	Vector r0 = b - A*x0;
-	double error = norm(r0);
+	double norm_r0 = norm(r0);
+	double norm_b = norm(b);
+	double error = norm_r0/norm_b;
 
 	// Preallocate an overall vector for the cosine and sine of the Givens rotations
 	Vector cosine(max_iter);		
@@ -23,7 +25,7 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 
 	// Preallocate and initialise beta vector, beta = (r_0,0,0,0,0,0,0,0)
 	Vector beta(n+1);
-	beta(1) = error;
+	beta(1) = norm_r0;
 
 	// Preallocate and initialise an overall y and residuals vector
 	Vector residuals(max_iter);
@@ -40,7 +42,7 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	Matrix H(max_iter, max_iter+1);
 	Matrix V(n,max_iter);
 
-	Vector v_1 = r0/error;
+	Vector v_1 = r0/norm_r0;
 
 	for (int i = 1; i < n+1; ++i)
 	{
@@ -122,7 +124,7 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 		beta(iter) = cosine(iter)*beta(iter);
 
 		//The error will be the absolute value of the last entry of our beta vector
-		error = std::fabs(beta(iter+1));
+		error = std::fabs(beta(iter+1))/norm_b;
 	 	residuals(iter+1) = error;
 	 
 	 	// Now copy the upper (iter) entries of beta; g_n
@@ -153,11 +155,12 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	 		delta_x(i) += V(i,j)*y(j);
 	 	}
 	 }
+	// std::cout<<cut(residuals,iter)<<"\n";
 
-	return x0 + delta_x;
-	 // return w;
+	// Choose to either let the function return the solution or the vector of residuals
+	// return x0 + delta_x;
+	 return residuals;
 }
-
 // Overload GMRES for sparse matrices
 Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double tol)
 {
@@ -171,7 +174,9 @@ Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double t
 	// Preallocate and (possibly) initialise all used vectors and matrices:
 	// Calculate initial residual r0
 	Vector r0 = b - A*x0;
-	double error = norm(r0);
+	double norm_r0 = norm(r0);
+	double norm_b = norm(b);
+	double error = norm_r0/norm_b;
 
 	// Preallocate an overall vector for the cosine and sine of the Givens rotations
 	Vector cosine(max_iter);		
@@ -179,25 +184,25 @@ Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double t
 
 	// Preallocate and initialise beta vector, beta = (r_0,0,0,0,0,0,0,0)
 	Vector beta(n+1);
-	beta(1) = error;
+	beta(1) = norm_r0;
 
 	// Preallocate and initialise an overall y and residuals vector
 	Vector residuals(max_iter);
 	residuals(1) = error;
 	Vector y(max_iter);
-
+	
 
 	if (error<tol)
 	{
 		return x0;
 	}
-
+	
 	// Preallocate an overall H and V matrix, set first column of V to v1
 	Matrix H(max_iter, max_iter+1);
 	Matrix V(n,max_iter);
-
-	Vector v_1 = r0/error;
-
+	std::cout << "error is"<<error;
+	Vector v_1 = r0/norm_r0;
+	std::cout << "Came to while loop \n";	
 	for (int i = 1; i < n+1; ++i)
 	{
 		V(i,1) = v_1(i);
@@ -205,7 +210,6 @@ Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double t
 
 	// Start the GMRES iteration until the desired tolerance is reached 
 	// or the maximum number of iterations have been executed.
-
 	while(error > tol && iter < max_iter)
 	{		
 		//Take the iter^{th} column of V
@@ -278,7 +282,7 @@ Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double t
 		beta(iter) = cosine(iter)*beta(iter);
 
 		//The error will be the absolute value of the last entry of our beta vector
-		error = std::fabs(beta(iter+1));
+		error = std::fabs(beta(iter+1))/norm_b;
 	 	residuals(iter+1) = error;
 	 
 	 	// Now copy the upper (iter) entries of beta; g_n
@@ -298,7 +302,7 @@ Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double t
 
 		iter +=1;
 	}
-
+	std::cout << "GMRES converted in "<<iter<< " operations\n";
 	// Calculate the final solution
 	Vector delta_x(n);
 
@@ -309,9 +313,8 @@ Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double t
 	 		delta_x(i) += V(i,j)*y(j);
 	 	}
 	 }
-
+	std::cout<<cut(residuals,iter)<<"\n";
 	return x0 + delta_x;
-	 // return w;
 }
 
 // Helper function to calculate the entries of the Givens matrix

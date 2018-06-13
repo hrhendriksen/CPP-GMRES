@@ -67,6 +67,7 @@ public:
    friend double norm(Vector& v, int p);
    friend Vector size(const Vector& v);
    friend Vector cut(const Vector& v, int new_m);
+   friend void writetoCSV(const Vector& v);
 };
 
 // All "friend" external operators and functions are declared as friend inside the class
@@ -89,4 +90,6 @@ double norm(Vector& v, int p=2);
 // Prototype signature of length() friend function
 int length(const Vector& v);
 Vector size(const Vector& v);
+
+void writetoCSV(const Vector& v);
 #endif

@@ -253,7 +253,6 @@ Matrix operator+(const Matrix& m1, const Matrix& m2)
 		// std::cout<<m1.mSize_c<<m2.mSize_c;
 		if (m1.mSize_c == m2.mSize_c)
 		{
-			std::cout<<"equaltty";
 			for (int i = 0; i < m1.mSize_r; ++i)
 			{
 				for(int j=0; j<m1.mSize_c; ++j)

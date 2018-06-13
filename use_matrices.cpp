@@ -66,5 +66,9 @@ int main(int argc, char* argv[])
 	Vector LVL(bz,17);
 	Vector product = LLL*LVL;
 	std::cout << product << "\n";
+
+	// Testcase 1 - Simple Matrix Test.	
+	
+
 	return 0;
 }

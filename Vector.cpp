@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "Vector.hpp"
 
 
@@ -385,6 +386,14 @@ double& Vector::operator()(int i)
   return mData[i-1];
 
 }
+void writetoCSV(const Vector& v)
+{
+  std::ofstream out("voutput.csv");
+  assert(out.is_open());
+  out << v;
+  out.close();
+  return;
+}
 
 
 
@@ -394,7 +403,7 @@ std::ostream& operator<<(std::ostream& output, const Vector& v) {
     { 
       output <<  v.mData[i];
       if (i != v.mSize-1)
-	output  << ", ";
+	output  << "\n";
       else
 	output  << ")";
     }

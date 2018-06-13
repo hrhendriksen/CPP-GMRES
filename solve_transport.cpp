@@ -6,8 +6,6 @@
 #include "Matrix.hpp"
 #include "gmres.hpp"
 #include "transport.hpp"
-#include <time.h>       /* time */
-#include <typeinfo>
 
 int main(int argc, char const *argv[])
 {
