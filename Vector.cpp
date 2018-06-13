@@ -16,8 +16,6 @@ Vector::Vector(int sizeVal)
 }
 
 
-
-
 // copy constructor - creates vector with the same entries as v1
 Vector::Vector(const Vector& v1)
 {
@@ -410,8 +408,6 @@ std::ostream& operator<<(std::ostream& output, const Vector& v) {
   return output;  // for multiple << operators.
 }
 
-
-
 // Friend function
 // calculate p-norm of a vector v
 // default value for p is 2
@@ -428,6 +424,7 @@ double norm(Vector& v, int p)
 
   return pow(norm_val, 1.0/((double) (p)));
 }
+
 // Member method
 // calculate p-norm of a vector v
 // default value for p is 2

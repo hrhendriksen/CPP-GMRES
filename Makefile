@@ -1,9 +1,9 @@
 all: use_vectors use_matrices use_gmres solve_transport
 
 #For debugging
-OPT=-g -Wall
+# OPT=-g -Wall
 #For optimistaion
-#OPT=-O
+OPT=-O2
 
 #All objects (except main) come from cpp and hpp 
 %.o:	%.cpp %.hpp

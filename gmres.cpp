@@ -158,8 +158,8 @@ Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_iter, double tol)
 	// std::cout<<cut(residuals,iter)<<"\n";
 
 	// Choose to either let the function return the solution or the vector of residuals
-	// return x0 + delta_x;
-	 return residuals;
+	return x0 + delta_x;
+	 // return residuals;
 }
 // Overload GMRES for sparse matrices
 Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double tol)
@@ -200,9 +200,7 @@ Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double t
 	// Preallocate an overall H and V matrix, set first column of V to v1
 	Matrix H(max_iter, max_iter+1);
 	Matrix V(n,max_iter);
-	std::cout << "error is"<<error;
 	Vector v_1 = r0/norm_r0;
-	std::cout << "Came to while loop \n";	
 	for (int i = 1; i < n+1; ++i)
 	{
 		V(i,1) = v_1(i);
@@ -302,7 +300,7 @@ Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double t
 
 		iter +=1;
 	}
-	std::cout << "GMRES converted in "<<iter<< " operations\n";
+	std::cout <<iter<< " \t";
 	// Calculate the final solution
 	Vector delta_x(n);
 
@@ -313,7 +311,6 @@ Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double t
 	 		delta_x(i) += V(i,j)*y(j);
 	 	}
 	 }
-	std::cout<<cut(residuals,iter)<<"\n";
 	return x0 + delta_x;
 }
 

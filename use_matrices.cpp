@@ -3,6 +3,7 @@
 #include <cassert>
 #include "Exception.hpp"
 #include "Matrix.hpp"
+#include <time.h>
 
 int main(int argc, char* argv[])
 {	
@@ -21,8 +22,8 @@ int main(int argc, char* argv[])
 	double d[4] = {2,4,5,2};
 	Vector d2(d,4);
 
-	print(c_matrix);
-	std::cout<<"------------------------------ \n";
+	// print(c_matrix);
+	// std::cout<<"------------------------------ \n";
 	// print();
 	// std::cout<<"------------------------------ \n";
 	// Matrix d = c_matrix + a_matrix;
@@ -40,7 +41,7 @@ int main(int argc, char* argv[])
 	// print(diag(c22,0));
 	// print(diag(c22,1));
 	// print(diag(c22,3));
-	std::cout<<"------------------------------ \n";
+	// std::cout<<"------------------------------ \n";
 	// Matrix f(3,2);
 	// try{
 	// f = a_matrix-c_matrix;
@@ -50,9 +51,9 @@ int main(int argc, char* argv[])
 	// }
 	Vector b(d, 4);
 	Matrix kk(b);
-	std::cout<<"----------------KK-------------- \n";
-	print(cut(c_matrix,5,5));
-	std::cout<<"------------------------------ \n";
+	// std::cout<<"----------------KK-------------- \n";
+	// print(cut(c_matrix,5,5));
+	// std::cout<<"------------------------------ \n";
 	// double cc = b.Read(2);
 	// std::cout<<cc<<"\n";
 	// Vector zz = c_matrix/b;
@@ -65,10 +66,75 @@ int main(int argc, char* argv[])
 	// print(LLL);
 	Vector LVL(bz,17);
 	Vector product = LLL*LVL;
-	std::cout << product << "\n";
+	// std::cout << product << "\n";
 
-	// Testcase 1 - Simple Matrix Test.	
-	
+	// Testcase 1 - Simple Matrix Test.
 
+	// Create random sparse tridiagonal matrix
+
+
+for (int i = 2; i <= 3000; ++i)
+	{
+		int testsize = i;
+		double aaa[testsize-1];
+		double bbb[testsize];
+		double ccc[testsize-1];
+		double ddd[testsize];
+
+		for (int i = 0; i < testsize; ++i)
+		{
+			aaa[std::max(0,i-1)] = rand()%10+1;
+			bbb[i] =  rand()%10+1;
+			ccc[std::max(0,i-1)] = rand()%10+1;
+			ddd[i] = rand()%10+1;
+		}
+
+		sparse_trid A_sp(testsize, aaa,bbb,ccc);
+
+		// Copy into a dense matrix
+		Matrix D(testsize, testsize);
+		Vector dDd(ddd, testsize);
+
+		D(1,1) = bbb[0];
+		D(1,2) = aaa[0];
+
+		for (int i = 2; i < testsize; ++i)
+		{
+			for (int j = i-1; j <= i+1; ++j)
+			{
+				if (i-j == 0)
+				{
+					D(i,j) = bbb[i-1];
+				}
+
+				if (i-j == -1)
+				{
+					D(i,j) = aaa[i-1];
+				}
+
+				if (i-j == 1)
+				{
+					D(i,j) = ccc[i-1];
+				}
+			}
+		}
+
+		D(testsize,testsize-1) = ccc[testsize-1];
+		D(testsize,testsize)   = bbb[testsize-1];
+
+		clock_t t1;
+		t1 = clock();
+		Vector sparse = A_sp*dDd;
+		t1 = clock() - t1;
+		std::cout<<"\t Sparse \t" << ((float)t1)/CLOCKS_PER_SEC<< "\t" << " n is " << testsize <<"\t";
+
+
+		clock_t t2;
+		t2 = clock();
+		Vector dense =  D*dDd;
+		t2 = clock() - t2;
+		std::cout<< "\t Dense \t" << ((float)t2)/CLOCKS_PER_SEC<< "\n";
+	}
+		
 	return 0;
 }
