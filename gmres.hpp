@@ -9,9 +9,10 @@
 typedef struct {
     double cos, sin;
 } angle;
-
-Vector gmres(const Matrix& A, Vector& b, Vector& x0, int max_it, double tol);
-Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double tol);
+ 
+template <class matrix_type>
+Vector gmres(const matrix_type& A, Vector& b, Vector& x0, int max_it, double tol);
+// Vector gmres(const sparse_trid& A, Vector& b, Vector& x0, int max_iter, double tol);
 
 angle Givens(double rho, double sigma);
 
