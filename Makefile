@@ -15,11 +15,11 @@ use_vectors:	use_vectors.cpp Vector.o Exception.o
 use_matrices: use_matrices.cpp Matrix.o Exception.o
 		g++ ${OPT} -o use_matrices use_matrices.cpp Vector.o Matrix.o Exception.o
 
-use_gmres: use_gmres.cpp gmres.o Exception.o
-	g++ ${OPT} -o use_gmres use_gmres.cpp gmres.o Vector.o Matrix.o Exception.o
+use_gmres: use_gmres.cpp Exception.o
+	g++ ${OPT} -o use_gmres use_gmres.cpp Vector.o Matrix.o Exception.o
 
 solve_transport: solve_transport.cpp transport.o Exception.o
-	g++ ${OPT} -o solve_transport solve_transport.cpp transport.o gmres.o Vector.o Matrix.o Exception.o
+	g++ ${OPT} -o solve_transport solve_transport.cpp transport.o Vector.o Matrix.o Exception.o
 
 
 clean:

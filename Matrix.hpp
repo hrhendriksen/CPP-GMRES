@@ -1,7 +1,7 @@
 #ifndef MATRIXDEF
 #define MATRIXDEF
 //  **********************
-//  *  Class of matrices  *
+//  *  Class of matrices *
 //  **********************
 
 //  Class written in such a way that code similar to Matlab code may be written
@@ -32,6 +32,7 @@ public:
 
 	//Function to get n
 	int GetNumberofRows() const;
+	int GetNumberofColumns() const;
 
 	friend void print(const sparse_trid& S);
 	friend Vector operator*(const sparse_trid& S, Vector& v);

@@ -11,6 +11,7 @@
 
 #include <cmath>
 #include "Exception.hpp"//  This class throws errors using the class "error"
+#include <cassert>
 
 class Vector
 {

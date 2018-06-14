@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Matrix.hpp"
 #include <fstream>
+
 //construct sparse trid matrix of given size
 // the first element of the superdiagonal is set to zero but is not part of the matrix,
 // the last element of the subdiagonal is set to zero but is not part of the matrix.
@@ -56,6 +57,13 @@ int sparse_trid::GetNumberofRows() const
 {
 	return mSize;
 }
+
+// Function to get number of rows of matrix
+int sparse_trid::GetNumberofColumns() const
+{
+	return mSize;
+}
+
 
 void print(const sparse_trid& S)
 {
