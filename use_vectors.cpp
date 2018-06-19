@@ -8,11 +8,12 @@ int main(int argc, char* argv[])
 {
   //This would  produce a compiler warning (there is no default constructor)
   // Vector badly_formed;
+  double arr[2] = {1,2};
+  const Vector a_vector(arr,2);
+  Vector new_vector(3);
+  new_vector = a_vector;
 
-  Vector a_vector(2);
-  a_vector(1)=10.0;
-  a_vector(2)=20.0;
-  
+  std::cout << a_vector(1);
   //Show that friends and methods can be used to do the same thing
   assert ( a_vector.norm() == norm(a_vector));
   assert ( a_vector.norm(3) == norm(a_vector, 3));

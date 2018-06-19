@@ -1,5 +1,5 @@
 all: use_vectors use_matrices use_gmres solve_transport
-
+-std=c++17
 #For debugging
 # OPT=-g -Wall
 #For optimistaion

@@ -49,13 +49,13 @@ int main(int argc, char const *argv[])
 	// Vector res = b_2-A_2*sol_2;
 	// std::cout << "Test : "<<  norm(res) <<"\n";
 
-	/* Testcase 3 - a random non sparse test example*/
-	// int matrix_size = 1000;
+	// /* Testcase 3 - a random non sparse test example*/
+	// int matrix_size = 600;
 	// int max_iter = 1*matrix_size+1;
 	// int max_adds  = 100;
 
 	// Matrix Res_mat(max_iter, max_adds);
-	// for (int j = 1; j < max_adds+1; ++j)
+	// for (int j = 1; j <= max_adds; ++j)
 	// {
 
 	// 	double A_3_values[int(pow(matrix_size,2))];
@@ -76,16 +76,17 @@ int main(int argc, char const *argv[])
 
 	// 	Matrix A_3(A_3_values, matrix_size, matrix_size);
 	// 	// std::cout<<"========GMRES with A is ========\n";
-	// 	// print(A_3);
+	// // 	// print(A_3);
 	// 	Vector x0_3(x0arr_3, matrix_size);
-	// 	// std::cout<<"========== x0 ============= is \n";
-	// 	// std::cout<< x0_3 << "\n";
+	// // 	// std::cout<<"========== x0 ============= is \n";
+	// // 	// std::cout<< x0_3 << "\n";
 	// 	Vector b_3(barr_3, matrix_size);
-	// 	// std::cout<<"========== b ============= is \n";
-	// 	// // std::cout<< b_3 << "\n";
+	// // 	// std::cout<<"========== b ============= is \n";
+	// // 	// std::cout<< b_3 << "\n";
 		
 	// 	//Let GMRES output the vector of residuals
-	// 	Vector sol_3 = gmres(A_3+j*eye(matrix_size), b_3, x0_3, max_iter+1, 1e-6);
+	// 	Matrix ZZZ = A_3+j*eye(matrix_size);
+	// 	Vector sol_3 = gmres(ZZZ, b_3, x0_3, max_iter+1, 1e-6);
 
 	// 	for (int i = 1; i < length(sol_3); ++i)
 	// 	{
@@ -132,12 +133,10 @@ int main(int argc, char const *argv[])
 
 	/* Testcase 5a - a sparse test case*/
 	for (int test = 1; test < 201; ++test)
-	{	int testsize =10*test;
-
+	{	
+		int testsize =10*test;
 		int max_iter = testsize+1;
-		double a[testsize-1];
-		double b[testsize];
-		double c[testsize-1];
+		double a[testsize-1], b[testsize], c[testsize-1];
 //====NDD==============================================================		
 		for (int i = 0; i < testsize; ++i)
 		{
@@ -154,58 +153,22 @@ int main(int argc, char const *argv[])
 		// }
 //=====================================================================
 		sparse_trid A_sp(testsize, a,b,c);
-		// print(A_sp);
-
 		Vector x0_sp(b,testsize);
 		Vector b_sp(b,testsize);
-
 		clock_t t1;
 		t1 = clock();
 		Vector sol_sp = gmres(A_sp, b_sp, x0_sp, max_iter+1, 1e-6);
 		t1 = clock() - t1;
 		std::cout<<"\t Sparse \t" << ((float)t1)/CLOCKS_PER_SEC<< "\t" << " n is " << testsize <<"\t";
-		
-		// std::cout << "The solution of the problem " << sol_sp << "\n";
 		Vector res_sp = b_sp-A_sp*sol_sp;
 		std::cout << "Sparse_Test : "<<  norm(res_sp)/norm(b_sp) <<"\t";
 //---------------------------------------------------------------
-// 		 Testcase 5b - a sparse test case
-	
-		// Copy the sparse matrix of Testcase 4 in to a Dense matrix.
-		Matrix D(testsize, testsize);
-
-		D(1,1) = b[0];
-		D(1,2) = a[0];
-
-		for (int i = 2; i < testsize; ++i)
-		{
-			for (int j = i-1; j <= i+1; ++j)
-			{
-				if (i-j == 0)
-				{
-					D(i,j) = b[i-1];
-				}
-
-				if (i-j == -1)
-				{
-					D(i,j) = a[i-1];
-				}
-
-				if (i-j == 1)
-				{
-					D(i,j) = c[i-1];
-				}
-			}
-		}
-		D(testsize,testsize-1) = c[testsize-1];
-		D(testsize,testsize)   = b[testsize-1];
-//---------------------------------------------------------------
+		Matrix D = sparse_trid2dense(A_sp);
 		clock_t t2;
 		t2 = clock();
 		Vector sol_D = gmres(D, b_sp, x0_sp, max_iter+1, 1e-6);
 		t2 = clock() - t2;
 		std::cout<< "\t Dense \t" << ((float)t2)/CLOCKS_PER_SEC<< "\t";
-		// std::cout << "The solution of the problem " << sol_sp << "\n";
 		Vector res_D = (b_sp-D*sol_D);
 		std::cout << "Dense_Test : "<<  norm(res_sp)/norm(b_sp) <<"\n";
 	}

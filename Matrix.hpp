@@ -1,46 +1,12 @@
 #ifndef MATRIXDEF
 #define MATRIXDEF
-//  **********************
-//  *  Class of matrices *
-//  **********************
-
 //  Class written in such a way that code similar to Matlab code may be written
 #include <cmath>
 #include "Vector.hpp"
 #include "Exception.hpp"
-
-//Class of sparse tridiagonal matrices
-class sparse_trid
-{
-private:
-	//member variables
-	int mSize;    // number of rows of the matrix
-
-	double* superdiagonal;
-	double* diagonal;
-	double* subdiagonal;
-public:
-	// constructors
-	// No default constructor
-
-	//construct sparse trid matrix of given size
-	sparse_trid(int sizeVal);
-	sparse_trid(int sizeVal, double superd[], double d[], double subd[]);
-
-	// Destructor
-	~sparse_trid();
-
-	//Function to get n
-	int GetNumberofRows() const;
-	int GetNumberofColumns() const;
-
-	friend void print(const sparse_trid& S);
-	friend Vector operator*(const sparse_trid& S, Vector& v);
-};
-
-void print(const sparse_trid& S);
-Vector operator*(const sparse_trid& S, Vector& v);
-
+//  **********************
+//  *  Class of matrices *
+//  **********************
 
 class Matrix
 {
@@ -72,7 +38,7 @@ public:
 
 	//Function to get number of columns	
 	int GetNumberofColumns() const;
-
+	
 
    // All "friend" external operators and functions are declared as friend inside the class (here)
    // but their actual prototype definitions occur outside the class.
@@ -108,7 +74,6 @@ public:
 	double& operator()(int row, int column);
 	//output
 	friend void print(const Matrix& m);
-	// friend std::ostream& operator<<(std::ostream& output, const Matrix& m);
 	friend double det(const Matrix& m);
 	friend Vector size(const Matrix& m);
 	friend Vector operator/(const Matrix& m, const Vector& v);
@@ -131,8 +96,6 @@ Matrix operator/(const Matrix& m1, const double& a);
 Matrix create_aug(const Vector& v, const Matrix& m);
 // Reshape matrix
 Matrix cut(const Matrix& m, int new_m, int new_n);
-//Append column
-Matrix append_c(const Matrix& m, const Vector& v);
 
 // Matrix Gaussian_elimination(Matrix aug);
 Vector operator/(const Matrix& m, const Vector& v);
@@ -140,15 +103,46 @@ Vector operator/(const Matrix& m, const Vector& v);
 Matrix operator-(const Matrix& m);
 //
 Vector size(const Matrix& m);
-
+//
+std::ostream& operator<<(std::ostream& output, const Matrix& m);
+void writetoCSV(const Matrix& m);
+void print(const Matrix& m);
+double det(const Matrix& m);
+//
 Matrix eye(int n);
 Matrix zeros(int m, int n);
 Matrix diag(const Vector& v,int n);
 
-std::ostream& operator<<(std::ostream& output, const Matrix& m);
+//Class of sparse tridiagonal matrices
+class sparse_trid
+{
+private:
+	//member variables
+	int mSize;    // number of rows of the matrix
+	double* superdiagonal;
+	double* diagonal;
+	double* subdiagonal;
+public:
+	// constructors
+	// No default constructor
+	//construct sparse trid matrix of given size
+	sparse_trid(int sizeVal);
+	sparse_trid(int sizeVal, double superd[], double d[], double subd[]);
+	// Destructor
+	~sparse_trid();
+	//Function to get n
+	int GetNumberofRows() const;
+	int GetNumberofColumns() const;
+	// Print function
+	friend void print(const sparse_trid& S);
+	// Multiplication operator for a sparse tridiag matrix and a vector
+	friend Vector operator*(const sparse_trid& S, Vector& v);
+	// Function that converts a sparse matrix to a dense matrix
+	friend Matrix sparse_trid2dense(const sparse_trid& S);
+};
 
-void writetoCSV(const Matrix& m);
+void print(const sparse_trid& S);
+Vector operator*(const sparse_trid& S, Vector& v);
+Matrix sparse_trid2dense(const sparse_trid& S);
 
-void print(const Matrix& m);
-double det(const Matrix& m);
 #endif

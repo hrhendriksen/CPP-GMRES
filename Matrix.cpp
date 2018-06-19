@@ -2,121 +2,6 @@
 #include "Matrix.hpp"
 #include <fstream>
 
-//construct sparse trid matrix of given size
-// the first element of the superdiagonal is set to zero but is not part of the matrix,
-// the last element of the subdiagonal is set to zero but is not part of the matrix.
-sparse_trid::sparse_trid(int sizeVal)
-{
-	mSize = sizeVal;
-
-	superdiagonal = new double [sizeVal];
-	diagonal = new double [sizeVal];
-	subdiagonal = new double [sizeVal];
-
-	for (int i = 0; i < sizeVal; ++i)
-	{
-		superdiagonal[i] = 0.0;
-		diagonal[i] = 0.0;
-		subdiagonal[i] = 0.0;
-	}
-}
-
-// Construct sparse trid matrix with 3 arrays
-sparse_trid::sparse_trid(int sizeVal, double superd[], double d[], double subd[])
-{
-	mSize = sizeVal;
-
-	superdiagonal = new double [sizeVal];
-	diagonal = new double [sizeVal];
-	subdiagonal = new double [sizeVal];
-
-	superdiagonal[0] = 0.0;
-	diagonal[0] = d[0];
-	subdiagonal[0] = subd[0];
-
-	for (int i = 1; i < sizeVal-1; ++i)
-	{
-		superdiagonal[i] = superd[i-1];
-		diagonal[i]=d[i];
-		subdiagonal[i] = subd[i];
-	}
-	superdiagonal[sizeVal-1] = superd[sizeVal-2];
-	diagonal[sizeVal-1] = d[sizeVal-1];
-	subdiagonal[sizeVal-1] = 0.0;
-}
-
-sparse_trid::~sparse_trid()
-{
-	delete[] superdiagonal;
-	delete[] diagonal;
-	delete[] subdiagonal;
-}
-
-// Function to get number of rows of matrix
-int sparse_trid::GetNumberofRows() const
-{
-	return mSize;
-}
-
-// Function to get number of rows of matrix
-int sparse_trid::GetNumberofColumns() const
-{
-	return mSize;
-}
-
-
-void print(const sparse_trid& S)
-{
-	std::cout<<"superdiagonal: \n";
-	std::cout<<"[";
-	for (int i = 0; i < S.mSize; ++i)
-	{
-		std::cout<<S.superdiagonal[i];
-		if (i<S.mSize-1)
-		{
-			std::cout<< ", ";
-		}
-	}
-	std::cout<<"]\n";
-
-	std::cout<<"diagonal: \n";
-	std::cout<<"[";
-	for (int i = 0; i < S.mSize; ++i)
-	{
-		std::cout<<S.diagonal[i];
-		if (i<S.mSize-1)
-		{
-			std::cout<< ", ";
-		}
-	}
-	std::cout<<"]\n";
-
-	std::cout<<"subdiagonal: \n";
-	std::cout<<"[";
-	for (int i = 0; i < S.mSize; ++i)
-	{
-		std::cout<<S.subdiagonal[i];
-		if (i<S.mSize-1)
-		{
-			std::cout<< ", ";
-		}
-	}
-	std::cout<<"]\n";
-}
-
-Vector operator*(const sparse_trid& S, Vector& v)
-{
-	assert(S.mSize == length(v));
-	Vector product(S.mSize);
-	product(1) = S.diagonal[0]*v(1)+S.superdiagonal[1]*v(2);
-	for (int i = 2; i < S.mSize; ++i)
-	{	
-		product(i)=v(i-1)*S.subdiagonal[i-2]+v(i)*S.diagonal[i-1]+v(i+1)*S.superdiagonal[i];
-	}
-	product(S.mSize) = S.diagonal[S.mSize-1]*v(S.mSize)+S.subdiagonal[S.mSize-2]*v(S.mSize-1);
-	return product;
-}
-
 //copy constructor
 Matrix::Matrix(const Matrix& m)
 {
@@ -146,7 +31,7 @@ Matrix::Matrix(const Vector& v)
 	{
 		mData[i] = new double [1];
 		
-		mData[i][0] = v.Read(i+1);
+		mData[i][0] = v(i+1);
 	}
 }
 
@@ -200,13 +85,13 @@ Matrix::Matrix(Vector& vector, int sizeVal_r, int sizeVal_c)
 			mData[i] = new double [sizeVal_c];
 			for (int j = 0; j < sizeVal_c; ++j)
 			{
-				mData[i][j] = vector.Read(sizeVal_c*i+j+1);
+				mData[i][j] = vector(sizeVal_c*i+j+1);
 			}
 		}
 }
 
 
-// Matrix desctructor
+// Matrix destructor
 Matrix::~Matrix()
 {
 	for (int i = 0; i < mSize_r; ++i)
@@ -516,7 +401,7 @@ Matrix operator-(const Matrix& m1, const Matrix& m2)
 						w.mData[i][j] = -m2.mData[i][j];
 					}
 				}
-				std::cerr<<"matrix add - different number of colums\n";
+				std::cerr<<"matrix subtr - different number of colums\n";
 				std::cerr<<"extra entries of smaller matrix assumed to be 0.0\n";
 		}
 		else //m1.mSize_c > m2.mSize_c
@@ -532,7 +417,7 @@ Matrix operator-(const Matrix& m1, const Matrix& m2)
 					w.mData[i][j] = m1.mData[i][j];
 				}
 			}
-				std::cerr<<"matrix add (WHY)- different number of colums\n";
+				std::cerr<<"matrix subtr - different number of colums\n";
 				std::cerr<<"extra entries of smaller matrix assumed to be 0.0\n";
 		}
 	}
@@ -579,7 +464,7 @@ Matrix operator-(const Matrix& m1, const Matrix& m2)
 				}
 			}
 		
-			std::cerr<<"matrix add - different number of colums\n";
+			std::cerr<<"matrix subtr - different number of colums\n";
 			std::cerr<<"extra entries of smaller matrix assumed to be 0.0\n";
 
 		
@@ -606,7 +491,7 @@ Matrix operator-(const Matrix& m1, const Matrix& m2)
 				}
 			}
 		}
-		std::cerr<<"bbbmatrix add - different number of colums\n";
+		std::cerr<<"bbbmatrix subtr - different number of colums\n";
 		std::cerr<<"extra entries of smaller matrix assumed to be 0.0\n";
 	}
 	else // m1.mSize_r > m2.mSize_r
@@ -651,7 +536,7 @@ Matrix operator-(const Matrix& m1, const Matrix& m2)
 				}
 			}
 		
-			std::cerr<< "matrix add - different number of colums\n";
+			std::cerr<< "matrix subtr - different number of colums\n";
 			std::cerr<< "extra entries of smaller matrix assumed to be 0.0\n";
 
 		
@@ -683,7 +568,7 @@ Matrix operator-(const Matrix& m1, const Matrix& m2)
 				}
 			}
 
-		std::cerr<< "???matrix add - different number of colums\n";
+		std::cerr<< "matrix subtr - different number of colums\n";
 		std::cerr<< "extra entries of smaller matrix assumed to be 0.0\n";
 		}
 
@@ -713,14 +598,12 @@ std::ostream& operator<<(std::ostream& output, const Matrix& m)
 
 void writetoCSV(const Matrix& m)
 {
-	std::ofstream out("output.csv");
+	std::ofstream out("moutput.csv");
 	assert(out.is_open());
 	out << m;
 	out.close();
 	return;
 }
-
-
 
 // Function that multiplies two matrices
 Matrix operator*(const Matrix& m1, const Matrix& m2)
@@ -763,12 +646,18 @@ Matrix operator*(const Matrix& m2, const double& a)
 
 Matrix operator/(const Matrix& m1, const double& a)
 {
-  if (a == 0.0)
-  {
-     throw Exception("div 0", "Attempt to divide by zero");
+  try {
+  	if(a == 0.0)
+  	{
+       throw Exception("div 0", "Attempt to divide by zero");
+    }
   }
-
+  catch(Exception& err)
+  {
+		err.DebugPrint();
+  }
   return m1*(1.0/a); 
+
 }
 
 Vector operator*(const Matrix& m,  const Vector& v)
@@ -781,7 +670,7 @@ Vector operator*(const Matrix& m,  const Vector& v)
 		array[i] = 0;
 		for (int j = 0; j < m.mSize_c; ++j)
 		{
-			array[i] += m.mData[i][j]*v.Read(j+1);	
+			array[i] += m.mData[i][j]*v(j+1);	
 		}
 	}
 	Vector ans(array, m.mSize_r);
@@ -798,7 +687,7 @@ Vector operator*(const Vector &v, const Matrix& m)
 
 		for (int i = 0; i < m.mSize_r; ++i)
 		{
-			array[j] += m.mData[i][j]*v.Read(i+1);
+			array[j] += m.mData[i][j]*v(i+1);
 		}
 	}
 	Vector ans(array, m.mSize_c);
@@ -817,19 +706,15 @@ Matrix create_aug(const Vector& v, const Matrix& m)
 		{
 			if(j<m.mSize_c+1){
 					aug(i,j) = m.mData[i-1][j-1];
-					// std::cout<<aug(i,j)<<"\t";
 					}
 			else if(j == m.mSize_c+1)
 				{
-				aug(i,j) = v.Read(i);
-				// std::cout<<aug(i,j)<<"\t";
+				aug(i,j) = v(i);
 				}
 		}
-			// std::cout<<"\n";
 	}
 	return aug;
 }
-
 
 //definition of the unary operator - 
 Matrix operator-(const Matrix& m)
@@ -998,33 +883,32 @@ double& Matrix::operator()(int i, int j)
 
 Vector operator/(const Matrix& m, const Vector& v)
 {
+	//assert that the matrix is square	
 	assert(m.mSize_c == m.mSize_r);
-
-	if (det(m)!= 0)
+	// make sure that the matrix is non-singular
+	try
 	{
-		throw Exception("inverse non-existent", "Matrix is non-singular");	
+		if (det(m)!= 0)
+		{
+			throw Exception("inverse non-existent", "Matrix is non-singular");	
+		}
 	}
-
+	catch (Exception& err)
+	{
+    	err.DebugPrint();
+	}
+	// Create the augmented matrix of the system
 	Matrix augmented = create_aug(v, m);
-	Matrix check = augmented.Gaussian_elimination();
-
-	return check.solve_triangular();	
+	//Bring the system to triangular form by GE
+	Matrix tria = augmented.Gaussian_elimination();
+	//return the solution (vector) of the triangular system
+	return tria.solve_triangular();	
 }
 
 Matrix Matrix::Gaussian_elimination()
 {	
 	int m = mSize_r;
 	int n = mSize_c;
-
-	// std::cout << "Gaussian_elimination started with m is"<< m <<"\n";
-	// for(int pp=0; pp<m; pp++)
-	// 	{
-	// 		for (int kk = 0; kk < n; ++kk)
-	// 		{
-	// 			std::cout << mData[pp][kk] << "\t";
-	// 		}
-	// 		std::cout << "\n";
-	// 	}
 	int h = 0;
 	int k = 0;
 	while( h<m and k<m)
@@ -1038,10 +922,8 @@ Matrix Matrix::Gaussian_elimination()
 				max_p = l;
 			}
 		}
-	//		std::cout << max_p;
-			// Now we know what the max pivot is.
-			// swap rows
-	//		std::cout << "here";
+		// Now we know what the max pivot is.
+		// swap rows
 		if(max_p != h)
 		{
 			double ph[m+1];
@@ -1060,17 +942,6 @@ Matrix Matrix::Gaussian_elimination()
 				mData[max_p][ll] = ph[ll];
 			}
 		}
-			// std::cout << "___________________ \n";
-	
-			// for(int pp=0; pp<m; pp++)
-			// {
-			// 	for (int kk = 0; kk < n; ++kk)
-			// 	{
-			// 		std::cout << mData[pp][kk] << "\t";
-			// 	}
-			// 	std::cout << "\n";
-			// }
-
 
 		if(mData[h][k]!=0)
 		{
@@ -1100,38 +971,26 @@ Matrix Matrix::Gaussian_elimination()
 
 Vector Matrix::solve_triangular()
 {
-	// std::cout<<"solve_triangular\n";
 	int n = mSize_c;
 	int m = mSize_r;
-	// std::cout<<"number of columns: "<< n << "\n";
-	// std::cout<<"number of rows: "<< m << "\n";
-
-	// std::cout<<"(2,2) entry"<<GE.mData[2][2]<<"\n";
-	// std::cout<<"(2,3) entry"<<GE.mData[2][3]<<"\n";
 
 	double x[m];
 	for (int i=m-1; i>=0; i--)
 	{
 		x[i] = mData[i][n-1]/mData[i][i];
-		// std::cout<<"running value x[i]"<<x[i]<<"\n";
+
 
 		for (int k=i-1;k>=0; k--)
 		{
 			mData[k][n-1] -= mData[k][i] * x[i];
 		}
-		// std::cout << GE.mData[1][3]
 	}
-	// std::cout<<"_._._._._._._. \n";
-	for(int fin = 0; fin<m; fin++)
-	{
-		// std::cout << x[fin]<<"\n";
-		// std::cout<<"print vector";
-	 }
 	return Vector(x,m);
 }
 
 Matrix eye(int n)
 {
+	std::cout<<"notworking";
 	double data[n*n];
 	for (int i = 0; i < n*n; ++i)
 	{
@@ -1165,7 +1024,7 @@ Matrix diag(const Vector& v, int k)
 		if ((i-k)%(n+1) == 0 && l < length(v))
 		{	
 			std::cout << "i = " << i << "\t l = " << l << "\n";
-			data[i] = v.Read(l+1);
+			data[i] = v(l+1);
 			l+=1;
 		}
 
@@ -1178,4 +1037,150 @@ Matrix diag(const Vector& v, int k)
 	return D;
 }
 
+//construct sparse trid matrix of given size
+// the first element of the superdiagonal is set to zero but is not part of the matrix,
+// the last element of the subdiagonal is set to zero but is not part of the matrix.
+sparse_trid::sparse_trid(int sizeVal)
+{
+	mSize = sizeVal;
+
+	superdiagonal = new double [sizeVal];
+	diagonal = new double [sizeVal];
+	subdiagonal = new double [sizeVal];
+
+	for (int i = 0; i < sizeVal; ++i)
+	{
+		superdiagonal[i] = 0.0;
+		diagonal[i] = 0.0;
+		subdiagonal[i] = 0.0;
+	}
+}
+
+// Construct sparse trid matrix with 3 arrays
+sparse_trid::sparse_trid(int sizeVal, double superd[], double d[], double subd[])
+{
+	mSize = sizeVal;
+
+	superdiagonal = new double [sizeVal];
+	diagonal = new double [sizeVal];
+	subdiagonal = new double [sizeVal];
+
+	superdiagonal[0] = 0.0;
+	diagonal[0] = d[0];
+	subdiagonal[0] = subd[0];
+
+	for (int i = 1; i < sizeVal-1; ++i)
+	{
+		superdiagonal[i] = superd[i-1];
+		diagonal[i]=d[i];
+		subdiagonal[i] = subd[i];
+	}
+	superdiagonal[sizeVal-1] = superd[sizeVal-2];
+	diagonal[sizeVal-1] = d[sizeVal-1];
+	subdiagonal[sizeVal-1] = 0.0;
+}
+
+sparse_trid::~sparse_trid()
+{
+	delete[] superdiagonal;
+	delete[] diagonal;
+	delete[] subdiagonal;
+}
+
+// Function to get number of rows of matrix
+int sparse_trid::GetNumberofRows() const
+{
+	return mSize;
+}
+
+// Function to get number of rows of matrix
+int sparse_trid::GetNumberofColumns() const
+{
+	return mSize;
+}
+
+
+void print(const sparse_trid& S)
+{
+	std::cout<<"superdiagonal: \n";
+	std::cout<<"[";
+	for (int i = 0; i < S.mSize; ++i)
+	{
+		std::cout<<S.superdiagonal[i];
+		if (i<S.mSize-1)
+		{
+			std::cout<< ", ";
+		}
+	}
+	std::cout<<"]\n";
+
+	std::cout<<"diagonal: \n";
+	std::cout<<"[";
+	for (int i = 0; i < S.mSize; ++i)
+	{
+		std::cout<<S.diagonal[i];
+		if (i<S.mSize-1)
+		{
+			std::cout<< ", ";
+		}
+	}
+	std::cout<<"]\n";
+
+	std::cout<<"subdiagonal: \n";
+	std::cout<<"[";
+	for (int i = 0; i < S.mSize; ++i)
+	{
+		std::cout<<S.subdiagonal[i];
+		if (i<S.mSize-1)
+		{
+			std::cout<< ", ";
+		}
+	}
+	std::cout<<"]\n";
+}
+
+Vector operator*(const sparse_trid& S, Vector& v)
+{
+	assert(S.mSize == length(v));
+	Vector product(S.mSize);
+	product(1) = S.diagonal[0]*v(1)+S.superdiagonal[1]*v(2);
+	for (int i = 2; i < S.mSize; ++i)
+	{	
+		product(i)=v(i-1)*S.subdiagonal[i-2]+v(i)*S.diagonal[i-1]+v(i+1)*S.superdiagonal[i];
+	}
+	product(S.mSize) = S.diagonal[S.mSize-1]*v(S.mSize)+S.subdiagonal[S.mSize-2]*v(S.mSize-1);
+	return product;
+}
+
+Matrix sparse_trid2dense(const sparse_trid& S)
+{
+	int n = S.mSize;
+	Matrix D(n,n);
+	D(1,1) = S.diagonal[0];
+	D(1,2) = S.superdiagonal[1];
+
+	for (int i = 2; i <= n-1; ++i)
+	{	
+		for (int j = i-1; j <= i+1; ++j)
+			{
+				if (i-j == 0)
+				{
+					D(i,j) = S.diagonal[i-1];
+				}
+
+				else if (i-j == -1)
+				{
+					D(i,j) = S.superdiagonal[i];
+				}
+
+				else if (i-j == 1)
+				{
+					D(i,j) = S.subdiagonal[i-2];
+				}
+			}	
+	}
+	D(n,n) = S.diagonal[n-1];
+	D(n,n-1) = S.subdiagonal[n-2];
+	return D;
+}
 

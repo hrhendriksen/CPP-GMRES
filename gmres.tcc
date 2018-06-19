@@ -68,13 +68,11 @@ Vector gmres(const matrix_type& A, Vector& b, Vector& x0, int max_iter, double t
 	// 	// Fill in the iter^{th} column of H
 		for (int j = 1; j < iter+1; ++j)
 		{
-
 			for (int i = 1; i < n+1; ++i)
 			{
 				H(j,iter) += w(i)*V(i,j);
 			}
 			
-
 			for (int k = 1; k < n+1 ; ++k)
 			{
 				w(k) -= H(j,iter)*V(k,j);
@@ -160,4 +158,24 @@ Vector gmres(const matrix_type& A, Vector& b, Vector& x0, int max_iter, double t
 	// Choose to either let the function return the solution or the vector of residuals
 	return x0 + delta_x;
 	 // return residuals;
+}
+
+// Helper function to calculate the entries of the Givens matrix
+angle Givens(double rho, double sigma) {
+	double cos;
+	double sin;
+	if (rho == 0.0)
+	{
+		cos = 0;
+		sin = 1;
+	}
+	else
+	{
+		double total = sqrt(pow(rho,2)+pow(sigma,2));
+		cos = std::fabs(rho)/total;
+		sin = cos*sigma/rho;
+	}
+
+    angle stru = {cos, sin};
+    return stru;
 }
