@@ -4,7 +4,7 @@
 #include <cmath>
 #include "Exception.hpp"
 #include "Matrix.hpp"
-#include "gmres.hpp"
+// #include "gmres.hpp"
 #include "transport.hpp"
 
 int main(int argc, char const *argv[])
@@ -19,8 +19,9 @@ int main(int argc, char const *argv[])
 	
 	// clock_t t;
 	// t = clock();
-	writetoCSV(solve(0,300,1,300,2));
+	writetoCSV(solve(0,100,1,100,2));
 	// t = clock() - t;
 	// printf ("It took me %lu clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
+	std::cout << "asdf";
 	return 0;
 }

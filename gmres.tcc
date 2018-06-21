@@ -1,5 +1,4 @@
 #include <iostream>
-#include "gmres.hpp"
 #include <cmath>
 
 template <class matrix_type>

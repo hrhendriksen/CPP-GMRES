@@ -21,6 +21,5 @@ use_gmres: use_gmres.cpp Exception.o
 solve_transport: solve_transport.cpp transport.o Exception.o
 	g++ ${OPT} -o solve_transport solve_transport.cpp transport.o Vector.o Matrix.o Exception.o
 
-
 clean:
 	rm -f *.o *~ use_vectors, use_matrices, use_gmres

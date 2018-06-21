@@ -990,7 +990,6 @@ Vector Matrix::solve_triangular()
 
 Matrix eye(int n)
 {
-	std::cout<<"notworking";
 	double data[n*n];
 	for (int i = 0; i < n*n; ++i)
 	{

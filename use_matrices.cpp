@@ -72,10 +72,10 @@ int main(int argc, char* argv[])
 
 /* Testcase 1 - Simple MVP.*/
 // Create random sparse tridiagonal matrix, ts is testsize
+/* initialize random seed: */
+srand (time(NULL));
 for (int ts = 2; ts <= 3000; ++ts)
 	{
-		/* initialize random seed: */
-  		srand (time(NULL));
 		double super[ts-1], diag[ts], sub[ts-1], ran[ts];
 		for (int i = 0; i < ts; ++i)
 		{

@@ -5,6 +5,7 @@
 #include "Exception.hpp"
 #include "Matrix.hpp"
 #include "gmres.hpp"
+#include <chrono>
 #include <time.h>       /* time */
 
 int main(int argc, char const *argv[])
@@ -132,45 +133,49 @@ int main(int argc, char const *argv[])
 		// std::cout << "Sparse_Test : "<<  norm(Rres) <<"\n";
 
 	/* Testcase 5a - a sparse test case*/
-	for (int test = 1; test < 201; ++test)
+	// initialize random seed:
+	srand (time(NULL));
+	int number_of_tests = 100;
+	for (int test = 1; test <= number_of_tests; ++test)
 	{	
 		int testsize =10*test;
 		int max_iter = testsize+1;
 		double a[testsize-1], b[testsize], c[testsize-1];
 //====NDD==============================================================		
-		for (int i = 0; i < testsize; ++i)
-		{
-			a[std::max(0,i-1)] = rand()%10+1;
-			b[i] =  rand()%10+1;
-			c[std::max(0,i-1)] = rand()%10+1;
-		}
-//=====DD==============================================================
 		// for (int i = 0; i < testsize; ++i)
 		// {
 		// 	a[std::max(0,i-1)] = rand()%10+1;
-		// 	b[i] = 10*(rand()%10+1);
+		// 	b[i] =  rand()%10+1;
 		// 	c[std::max(0,i-1)] = rand()%10+1;
 		// }
+//=====DD==============================================================
+		for (int i = 0; i < testsize; ++i)
+		{
+			a[std::max(0,i-1)] = rand()%10+1;
+			b[i] = 50 +(rand()%10+1);
+			c[std::max(0,i-1)] = rand()%10+1;
+		}
 //=====================================================================
 		sparse_trid A_sp(testsize, a,b,c);
 		Vector x0_sp(b,testsize);
 		Vector b_sp(b,testsize);
-		clock_t t1;
-		t1 = clock();
+		auto start1 = std::chrono::high_resolution_clock::now();
 		Vector sol_sp = gmres(A_sp, b_sp, x0_sp, max_iter+1, 1e-6);
-		t1 = clock() - t1;
-		std::cout<<"\t Sparse \t" << ((float)t1)/CLOCKS_PER_SEC<< "\t" << " n is " << testsize <<"\t";
+		auto end1 = std::chrono::high_resolution_clock::now();
+		auto diff1 = end1 - start1;
+		std::cout<<"Sparse \t" << std::chrono::duration 
+		<double, std::milli> (diff1).count() << " \t ms" << "\t";
 		Vector res_sp = b_sp-A_sp*sol_sp;
-		std::cout << "Sparse_Test : "<<  norm(res_sp)/norm(b_sp) <<"\t";
+		std::cout << "S_Test : "<<  norm(res_sp)/norm(b_sp) <<"\t";
 //---------------------------------------------------------------
 		Matrix D = sparse_trid2dense(A_sp);
-		clock_t t2;
-		t2 = clock();
+		auto start2 = std::chrono::high_resolution_clock::now();
 		Vector sol_D = gmres(D, b_sp, x0_sp, max_iter+1, 1e-6);
-		t2 = clock() - t2;
-		std::cout<< "\t Dense \t" << ((float)t2)/CLOCKS_PER_SEC<< "\t";
+		auto end2 = std::chrono::high_resolution_clock::now();
+		auto diff2 = end2 - start2;
+		std::cout<<"\t Dense \t" << std::chrono::duration <double, std::milli> (diff2).count() << "\t ms";
 		Vector res_D = (b_sp-D*sol_D);
-		std::cout << "Dense_Test : "<<  norm(res_sp)/norm(b_sp) <<"\n";
+		std::cout << "D_T : "<<  norm(res_sp)/norm(b_sp) <<"\n";
 	}
 
 	return 0;
