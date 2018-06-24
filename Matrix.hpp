@@ -63,19 +63,18 @@ public:
 	// Reshape matrix
 	friend Matrix cut(const Matrix& m, int new_m, int new_n);
 	// Apply Gaussian Elimination
-	Matrix Gaussian_elimination();
+	void Gaussian_elimination();
 	//Solve triangular system
 	Vector solve_triangular();
-
 
 	//Overloaded assignment
 	Matrix& operator=(const Matrix& m);
 	//indexing starting from 1
 	double& operator()(int row, int column);
-	//output
+	//Friend functions
 	friend void print(const Matrix& m);
 	friend double det(const Matrix& m);
-	friend Vector size(const Matrix& m);
+	friend std::pair<int,int> size(const Matrix& m);
 	friend Vector operator/(const Matrix& m, const Vector& v);
 	friend void writetoCSV(const Matrix& m);
 	friend std::ostream& operator<<(std::ostream& output, const Matrix& m);
@@ -96,24 +95,30 @@ Matrix operator/(const Matrix& m1, const double& a);
 Matrix create_aug(const Vector& v, const Matrix& m);
 // Reshape matrix
 Matrix cut(const Matrix& m, int new_m, int new_n);
-
 // Matrix Gaussian_elimination(Matrix aug);
 Vector operator/(const Matrix& m, const Vector& v);
 //Unary operator
 Matrix operator-(const Matrix& m);
-//
-Vector size(const Matrix& m);
-//
+// Declaration of size friend function
+std::pair<int,int> size(const Matrix& m);
+//Matrix output
 std::ostream& operator<<(std::ostream& output, const Matrix& m);
+// Write matrix friend function
 void writetoCSV(const Matrix& m);
+// Print matrix friend function
 void print(const Matrix& m);
+// Determinant friend function
 double det(const Matrix& m);
-//
+// Function that generates n dimensional identity
 Matrix eye(int n);
+// Function that generates m by n zero matrix
 Matrix zeros(int m, int n);
+// Funciton that creates diagonal matrix with v on diagonal.
 Matrix diag(const Vector& v,int n);
 
-//Class of sparse tridiagonal matrices
+//  ********************************************
+//  *  Class of sparse tridiagonal matrices *
+//  ********************************************
 class sparse_trid
 {
 private:
@@ -125,13 +130,15 @@ private:
 public:
 	// constructors
 	// No default constructor
-	//construct sparse trid matrix of given size
+	//constructor sparse trid matrix of given size
 	sparse_trid(int sizeVal);
+	//constructor sparse trid matrix of with diagonals given as arrays
 	sparse_trid(int sizeVal, double superd[], double d[], double subd[]);
 	// Destructor
 	~sparse_trid();
-	//Function to get n
+	//Function to get number of rows
 	int GetNumberofRows() const;
+	//Function to get number of columnss
 	int GetNumberofColumns() const;
 	// Print function
 	friend void print(const sparse_trid& S);
@@ -141,8 +148,10 @@ public:
 	friend Matrix sparse_trid2dense(const sparse_trid& S);
 };
 
+// Print function
 void print(const sparse_trid& S);
+// Multiplication friend function
 Vector operator*(const sparse_trid& S, Vector& v);
+// Conversion function from sparse to dense
 Matrix sparse_trid2dense(const sparse_trid& S);
-
 #endif

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Matrix.hpp"
 #include <fstream>
+#include <utility>
 
 //copy constructor
 Matrix::Matrix(const Matrix& m)
@@ -139,7 +140,6 @@ Matrix operator+(const Matrix& m1, const Matrix& m2)
 	}
 
 	Matrix w(m,n);
-	std::cout<<m<<n;
 	// add the matrices
 	if (m1.mSize_r == m2.mSize_r) 
 	{
@@ -158,28 +158,28 @@ Matrix operator+(const Matrix& m1, const Matrix& m2)
 		{
 
 			for (int i = 0; i < m1.mSize_r; ++i)
+			{
+				for (int j = 0; j < m1.mSize_c; ++j)
 				{
-					for (int j = 0; j < m1.mSize_c; ++j)
-					{
-						w.mData[i][j] = m1.mData[i][j]+m2.mData[i][j];
-					}
-
-					for (int j=m1.mSize_c; j < m2.mSize_c; j++)
-					{
-						w.mData[i][j] = m2.mData[i][j];
-					}
+					w.mData[i][j] = m1.mData[i][j]+m2.mData[i][j];
 				}
-				std::cerr<<"matrix add - different number of colums\n";
-				std::cerr<<"extra entries of smaller matrix assumed to be 0.0\n";
+
+				for (int j=m1.mSize_c; j < m2.mSize_c; j++)
+				{
+					w.mData[i][j] = m2.mData[i][j];
+				}
+			}
+			std::cerr<<"matrix add - different number of colums\n";
+			std::cerr<<"extra entries of smaller matrix assumed to be 0.0\n";
 		}
 		else //m1.mSize_c > m2.mSize_c
 		{
 			for (int i = 0; i < m1.mSize_r; ++i)
 			{
 				for (int j = 0; j < m2.mSize_c; ++j)
-					{
-						w.mData[i][j] = m1.mData[i][j]+m2.mData[i][j];
-					}	
+				{
+					w.mData[i][j] = m1.mData[i][j]+m2.mData[i][j];
+				}	
 				for (int j = m2.mSize_c; j < m1.mSize_c; ++j)
 				{
 					w.mData[i][j] = m1.mData[i][j];
@@ -197,9 +197,9 @@ Matrix operator+(const Matrix& m1, const Matrix& m2)
 			for (int j = 0; j < m1.mSize_c; ++j)
 			{
 				for(int i=0; i<m1.mSize_r; ++i)
-					{
+				{
 					w.mData[i][j] = m1.mData[i][j]+m2.mData[i][j];
-					}
+				}
 				for (int i = m1.mSize_r; i < m2.mSize_r; ++i)
 				{
 					w.mData[i][j] = m2.mData[i][j];
@@ -210,12 +210,12 @@ Matrix operator+(const Matrix& m1, const Matrix& m2)
 		{
 
 			for (int i = 0; i < m1.mSize_r; ++i)
+			{
+				for (int j = 0; j < m1.mSize_c; ++j)
 				{
-					for (int j = 0; j < m1.mSize_c; ++j)
-					{
-						w.mData[i][j] = m1.mData[i][j]+m2.mData[i][j];
-					}
+					w.mData[i][j] = m1.mData[i][j]+m2.mData[i][j];
 				}
+			}
 			for (int i = m1.mSize_r; i < m2.mSize_r; ++i)
 			{					
 				for (int j = 0; j < m2.mSize_c; j++)
@@ -269,9 +269,9 @@ Matrix operator+(const Matrix& m1, const Matrix& m2)
 			for (int j = 0; j < m2.mSize_c; ++j)
 			{
 				for(int i=0; i<m2.mSize_r; ++i)
-					{
+				{
 					w.mData[i][j] = m1.mData[i][j]+m2.mData[i][j];
-					}
+				}
 				for (int i = m2.mSize_r; i < m1.mSize_r; ++i)
 				{
 					w.mData[i][j] = m1.mData[i][j];
@@ -306,8 +306,6 @@ Matrix operator+(const Matrix& m1, const Matrix& m2)
 		
 			std::cerr<< "matrix add - different number of colums\n";
 			std::cerr<< "extra entries of smaller matrix assumed to be 0.0\n";
-
-		
 		}
 		else //m1.mSize_c < m2.mSize_c and m1.mSize_r > m2.mSize_r
 		{
@@ -335,7 +333,6 @@ Matrix operator+(const Matrix& m1, const Matrix& m2)
 					w.mData[i][j] = m2.mData[i][j];
 				}
 			}
-
 		std::cerr<< "???matrix add - different number of colums\n";
 		std::cerr<< "extra entries of smaller matrix assumed to be 0.0\n";
 		}
@@ -370,14 +367,12 @@ Matrix operator-(const Matrix& m1, const Matrix& m2)
 	}
 
 	Matrix w(m,n);
-	std::cout<<m<<n;
 	// add the matrices
 	if (m1.mSize_r == m2.mSize_r) 
 	{
 		// std::cout<<m1.mSize_c<<m2.mSize_c;
 		if (m1.mSize_c == m2.mSize_c)
 		{
-			std::cout<<"equaltty";
 			for (int i = 0; i < m1.mSize_r; ++i)
 			{
 				for(int j=0; j<m1.mSize_c; ++j)
@@ -465,9 +460,7 @@ Matrix operator-(const Matrix& m1, const Matrix& m2)
 			}
 		
 			std::cerr<<"matrix subtr - different number of colums\n";
-			std::cerr<<"extra entries of smaller matrix assumed to be 0.0\n";
-
-		
+			std::cerr<<"extra entries of smaller matrix assumed to be 0.0\n";		
 		}
 		else //m1.mSize_c > m2.mSize_c and m1.mSize_r < m2.mSize_r
 		{
@@ -491,7 +484,7 @@ Matrix operator-(const Matrix& m1, const Matrix& m2)
 				}
 			}
 		}
-		std::cerr<<"bbbmatrix subtr - different number of colums\n";
+		std::cerr<<"matrix subtr - different number of colums\n";
 		std::cerr<<"extra entries of smaller matrix assumed to be 0.0\n";
 	}
 	else // m1.mSize_r > m2.mSize_r
@@ -596,6 +589,7 @@ std::ostream& operator<<(std::ostream& output, const Matrix& m)
   return output;  // for multiple << operators.
 }
 
+// Function to write a matrix to a CSV file
 void writetoCSV(const Matrix& m)
 {
 	std::ofstream out("moutput.csv");
@@ -643,23 +637,17 @@ Matrix operator*(const Matrix& m2, const double& a)
 {
 	return a*m2;
 }
-
+// Definition of division of a matrix by a scalar
 Matrix operator/(const Matrix& m1, const double& a)
 {
-  try {
-  	if(a == 0.0)
-  	{
-       throw Exception("div 0", "Attempt to divide by zero");
-    }
-  }
-  catch(Exception& err)
-  {
-		err.DebugPrint();
-  }
-  return m1*(1.0/a); 
-
+	if(a == 0.0)
+	{
+		throw Exception("div 0", "Attempt to divide by zero");
+	}
+	
+	return m1*(1.0/a); 
 }
-
+// Defintion of multipl. of matrix by a vector
 Vector operator*(const Matrix& m,  const Vector& v)
 {
 	assert(m.mSize_c == length(v));
@@ -677,6 +665,7 @@ Vector operator*(const Matrix& m,  const Vector& v)
 	return ans;
 }
 
+// Definition of multipl. of vector b a matrix
 Vector operator*(const Vector &v, const Matrix& m)
 {
 	assert(m.mSize_r == length(v));
@@ -732,10 +721,9 @@ Matrix operator-(const Matrix& m)
 }
 
 // return the size of a matrix
-Vector size(const Matrix& m)
+std::pair<int,int> size(const Matrix& m)
 {
-	double values[2] = {m.mSize_r,m.mSize_c};
-	return Vector(values,2);
+	return {m.mSize_r,m.mSize_c};
 }
 
 
@@ -788,12 +776,13 @@ double det(const Matrix& m)
 	return determinant;
 }
 
-// Cut matrix
+// Function that cuts matrix
 Matrix cut(const Matrix& m, int new_m, int new_n)
 {
 	int min_rows;
 	int min_columns;
 
+	// Find the minimum of the new_m and new_m and row/column size of the matrix
 	if (m.mSize_r < new_m)
 	{
 		min_rows = m.mSize_r;
@@ -811,7 +800,7 @@ Matrix cut(const Matrix& m, int new_m, int new_n)
 	{
 		min_columns = new_n;
 	}
-	
+	// Create new matrix and fill
 	Matrix new_matrix(new_m,new_n);
 	for (int i = 0; i < min_rows; ++i)
 	{
@@ -823,8 +812,6 @@ Matrix cut(const Matrix& m, int new_m, int new_n)
 
 	return new_matrix;
 }
-
-
 
 //definition of the matrix operation =
 Matrix& Matrix::operator=(const Matrix& m)
@@ -881,6 +868,7 @@ double& Matrix::operator()(int i, int j)
 	return mData[i-1][j-1];
 }
 
+// Definition of backslash operator
 Vector operator/(const Matrix& m, const Vector& v)
 {
 	//assert that the matrix is square	
@@ -888,9 +876,9 @@ Vector operator/(const Matrix& m, const Vector& v)
 	// make sure that the matrix is non-singular
 	try
 	{
-		if (det(m)!= 0)
+		if (det(m) == 0)
 		{
-			throw Exception("inverse non-existent", "Matrix is non-singular");	
+			throw Exception("inverse non-existent", "Matrix is singular");	
 		}
 	}
 	catch (Exception& err)
@@ -900,12 +888,13 @@ Vector operator/(const Matrix& m, const Vector& v)
 	// Create the augmented matrix of the system
 	Matrix augmented = create_aug(v, m);
 	//Bring the system to triangular form by GE
-	Matrix tria = augmented.Gaussian_elimination();
+	augmented.Gaussian_elimination();
 	//return the solution (vector) of the triangular system
-	return tria.solve_triangular();	
+	return augmented.solve_triangular();	
 }
 
-Matrix Matrix::Gaussian_elimination()
+// Helper function for the backslash, that performs GE on a matrix
+void Matrix::Gaussian_elimination()
 {	
 	int m = mSize_r;
 	int n = mSize_c;
@@ -957,18 +946,9 @@ Matrix Matrix::Gaussian_elimination()
 		k+=1;
 		h+=1;
 	}
-
-	double *array = new double[m*n];
-	for (int i = 0; i < m; ++i)
-	{
-		for (int j = 0; j < n; ++j)
-		{
-			array[i*n+j]=mData[i][j];
-		}
-	}
-	return Matrix(array, m, n);
 }
 
+// Helper function for backslash, solve triangular system
 Vector Matrix::solve_triangular()
 {
 	int n = mSize_c;
@@ -988,6 +968,7 @@ Vector Matrix::solve_triangular()
 	return Vector(x,m);
 }
 
+// Function that generates n-dimensional identity
 Matrix eye(int n)
 {
 	double data[n*n];
@@ -1005,28 +986,25 @@ Matrix eye(int n)
 	Matrix I(data,n,n);
 	return I;
 }
-
+// Function that generates m by n zero matrix
 Matrix zeros(int m, int n)
 {
 	Matrix M(m,n);
 	return M;
 }
 
+// Funciton that creates diagonal matrix with v on diagonal.
 Matrix diag(const Vector& v, int k)
 {	int n = length(v)+std::abs(k);
-	std::cout << "n is " << n << "\n";
-	std::cout << "length of v is"<< length(v)<<"\n";
 	double data[n*n];
 	int l = 0;
 	for (int i = 0; i < n*n; ++i)
 	{
 		if ((i-k)%(n+1) == 0 && l < length(v))
 		{	
-			std::cout << "i = " << i << "\t l = " << l << "\n";
 			data[i] = v(l+1);
 			l+=1;
 		}
-
 		else
 		{
 			data[i]=0;
@@ -1055,7 +1033,7 @@ sparse_trid::sparse_trid(int sizeVal)
 	}
 }
 
-// Construct sparse trid matrix with 3 arrays
+// Constructor of sparse trid matrix with 3 arrays
 sparse_trid::sparse_trid(int sizeVal, double superd[], double d[], double subd[])
 {
 	mSize = sizeVal;
@@ -1078,7 +1056,7 @@ sparse_trid::sparse_trid(int sizeVal, double superd[], double d[], double subd[]
 	diagonal[sizeVal-1] = d[sizeVal-1];
 	subdiagonal[sizeVal-1] = 0.0;
 }
-
+// Sparse trid destructor
 sparse_trid::~sparse_trid()
 {
 	delete[] superdiagonal;
@@ -1098,7 +1076,7 @@ int sparse_trid::GetNumberofColumns() const
 	return mSize;
 }
 
-
+// Print function for the sparse_trid matrix
 void print(const sparse_trid& S)
 {
 	std::cout<<"superdiagonal: \n";
@@ -1138,6 +1116,7 @@ void print(const sparse_trid& S)
 	std::cout<<"]\n";
 }
 
+// Multiplication operator for the sparse_trid matrix
 Vector operator*(const sparse_trid& S, Vector& v)
 {
 	assert(S.mSize == length(v));
@@ -1151,6 +1130,7 @@ Vector operator*(const sparse_trid& S, Vector& v)
 	return product;
 }
 
+// Conversion function from sp to dense matrix
 Matrix sparse_trid2dense(const sparse_trid& S)
 {
 	int n = S.mSize;
@@ -1182,4 +1162,3 @@ Matrix sparse_trid2dense(const sparse_trid& S)
 	D(n,n-1) = S.subdiagonal[n-2];
 	return D;
 }
-

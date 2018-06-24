@@ -128,7 +128,7 @@ Vector gmres(const matrix_type& A, Vector& b, Vector& x0, int max_iter, double t
 	 	// to apply backward substitution.
 		Vector g_n = cut(beta, iter);	
 
-	// 	// Backward substitution of the triangular system: R*y = g_n
+	// Backward substitution of the triangular system: R*y = g_n
 		for (int i=iter; i>=1; i--)
 		{
 			y(i) = g_n(i)/H(i,i);
@@ -157,24 +157,4 @@ Vector gmres(const matrix_type& A, Vector& b, Vector& x0, int max_iter, double t
 	// Choose to either let the function return the solution or the vector of residuals
 	return x0 + delta_x;
 	 // return residuals;
-}
-
-// Helper function to calculate the entries of the Givens matrix
-angle Givens(double rho, double sigma) {
-	double cos;
-	double sin;
-	if (rho == 0.0)
-	{
-		cos = 0;
-		sin = 1;
-	}
-	else
-	{
-		double total = sqrt(pow(rho,2)+pow(sigma,2));
-		cos = std::fabs(rho)/total;
-		sin = cos*sigma/rho;
-	}
-
-    angle stru = {cos, sin};
-    return stru;
 }

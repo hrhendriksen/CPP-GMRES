@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "Vector.hpp"
+#include "utility"
 
 // copy constructor - creates vector with the same entries as v1
 Vector::Vector(const Vector& v1)
@@ -344,6 +345,7 @@ std::ostream& operator<<(std::ostream& output, const Vector& v)
   return output;  // for multiple << operators.
 }
 
+
 // return length of a vector
 int length(const Vector& v)
 {
@@ -367,10 +369,9 @@ double norm(const Vector& v, int p)
 }
 
 // Fuction that returns as a vector the size of a vector
-Vector size(const Vector& v)
+std::pair<int,int> size(const Vector& v)
 {
-  double values[2] = {1,v.mSize};
-  return Vector(values,2);
+  return {1,v.mSize};
 }
 // Vector that cuts a vector of size new_m out of a vector
 // if new_m is bigger than the old vector than those entries

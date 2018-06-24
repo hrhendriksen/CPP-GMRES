@@ -85,12 +85,7 @@ Matrix solve(double v, int gridpoints, double endtime, int timepoints, int metho
 	for (int j = 1; j < timepoints; ++j)
 	{
 		std::cout << "j is" << j << "\n";
-		// Use GMRES to find u1
-		// std::cout << "old u_old :"<< u_old << "\n";
-		// std::cout << "Steady state??????????" << "\n";
-		// std::cout << S_central*u_old-u_old<<"\n";
 		Vector u_new = gmres(S, u_old, u_old, gridpoints, 1e-6);
-		// std::cout << "u_new :"<< u_new << "\n";
 
 		//Copy u_new into Z
 		for (int i = 1; i <= gridpoints; ++i)
@@ -99,7 +94,6 @@ Matrix solve(double v, int gridpoints, double endtime, int timepoints, int metho
 		}
 		u_old = u_new;
 		time += delta_t;
-		// std::cout << time << "\n";
 	}
 	return Z;
 }

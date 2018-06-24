@@ -9,6 +9,7 @@
 //  code may be written
 
 #include <cmath>
+#include <utility>
 #include "Exception.hpp"//  This class throws errors using the class "error"
 
 class Vector
@@ -68,7 +69,7 @@ public:
    // Get vector norm
    friend double norm(const Vector& v, int p);
    // Get vector size
-   friend Vector size(const Vector& v);
+   friend std::pair<int,int> size(const Vector& v);
    // Cut off the vector
    friend Vector cut(const Vector& v, int new_m);
    // Write the vector into a CSV output file
@@ -94,7 +95,7 @@ int length(const Vector& v);
 // Prototype signature of norm() friend function
 double norm(const Vector& v, int p=2);
 // Prototype signature of size() friend function
-Vector size(const Vector& v);
+std::pair<int,int> size(const Vector& v);
 // Prototype signature of cut() friend function
 Vector cut(const Vector& v, int new_m);
 // Prototype signature of writetoCSV() friend function
