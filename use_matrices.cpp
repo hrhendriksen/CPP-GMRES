@@ -108,36 +108,36 @@ int main(int argc, char* argv[])
 ======================================================*/
 // Create random sparse tridiagonal matrix, ts is testsize
 /* initialize random seed: */
-// srand (time(NULL));
-// for (int ts = 2; ts <= 3000; ++ts)
-// 	{
-// 		// Create sparse matrix
-// 		double super[ts-1], diag[ts], sub[ts-1], ran[ts];
-// 		for (int i = 0; i < ts; ++i)
-// 		{
-// 			super[std::max(0,i-1)] = rand()%10+1;
-// 			diag[i] =  rand()%10+1;
-// 			sub[std::max(0,i-1)] = rand()%10+1;
-// 			ran[i] = rand()%10+1;
-// 		}
-// 		sparse_trid A_sp(ts, super,diag,sub);
-// 		// Create random vector
-// 		Vector RAN(ran, ts);
-// 		// Copy into a dense matrix
-// 		Matrix D = sparse_trid2dense(A_sp);
-// 		// Clock both mvps and output times in table
-// 		auto start1 = std::chrono::high_resolution_clock::now();
-// 		Vector sparse = A_sp*RAN;
-// 		auto end1 = std::chrono::high_resolution_clock::now();
-// 		auto diff1 = end1 - start1;
-// 		std::cout << " n is  " << ts <<"\t";
-// 		std::cout<<"\t Sparse \t" << std::chrono::duration 
-// 		<double, std::milli> (diff1).count() << " \t ms" << "\t";
-// 		auto start2 = std::chrono::high_resolution_clock::now();
-// 		Vector dense = D*RAN;
-// 		auto end2 = std::chrono::high_resolution_clock::now();
-// 		auto diff2 = end2 - start2;
-// 		std::cout<<"\t Dense \t" << std::chrono::duration <double, std::milli> (diff2).count() << "\t ms" << "\n";
-// 	}
+srand (time(NULL));
+for (int ts = 2; ts <= 3000; ++ts)
+	{
+		// Create sparse matrix
+		double super[ts-1], diag[ts], sub[ts-1], ran[ts];
+		for (int i = 0; i < ts; ++i)
+		{
+			super[std::max(0,i-1)] = rand()%10+1;
+			diag[i] =  rand()%10+1;
+			sub[std::max(0,i-1)] = rand()%10+1;
+			ran[i] = rand()%10+1;
+		}
+		sparse_trid A_sp(ts, super,diag,sub);
+		// Create random vector
+		Vector RAN(ran, ts);
+		// Copy into a dense matrix
+		Matrix D = sparse_trid2dense(A_sp);
+		// Clock both mvps and output times in table
+		auto start1 = std::chrono::high_resolution_clock::now();
+		Vector sparse = A_sp*RAN;
+		auto end1 = std::chrono::high_resolution_clock::now();
+		auto diff1 = end1 - start1;
+		std::cout << " n is  " << ts <<"\t";
+		std::cout<<"\t Sparse \t" << std::chrono::duration 
+		<double, std::milli> (diff1).count() << " \t ms" << "\t";
+		auto start2 = std::chrono::high_resolution_clock::now();
+		Vector dense = D*RAN;
+		auto end2 = std::chrono::high_resolution_clock::now();
+		auto diff2 = end2 - start2;
+		std::cout<<"\t Dense \t" << std::chrono::duration <double, std::milli> (diff2).count() << "\t ms" << "\n";
+	}
 	return 0;
 }

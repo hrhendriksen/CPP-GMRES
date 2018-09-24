@@ -27,8 +27,8 @@ public:
 	Matrix(int sizeVal_r,int sizeVal_c);
 	
 	// Overloaded initialisation constructor
-	Matrix(double array[], int sizeVal_r, int sizeVal_c);
-	Matrix(Vector& vector, int sizeVal_r, int sizeVal_c);
+	Matrix(const double array[], int sizeVal_r, int sizeVal_c);
+	Matrix(const Vector& vector, int sizeVal_r, int sizeVal_c);
 	
 	//destructor
 	~Matrix();	

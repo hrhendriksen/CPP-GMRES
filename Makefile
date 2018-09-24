@@ -22,4 +22,4 @@ solve_transport: solve_transport.cpp transport.o Givens.o Exception.o
 
 
 clean:
-	rm -f *.o *~ use_vectors, use_matrices, use_gmres, solve_transport
+	rm -f *.o *~ use_vectors,use_matrices,use_gmres,solve_transport

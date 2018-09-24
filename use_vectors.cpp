@@ -32,7 +32,6 @@ int main(int argc, char* argv[])
   //Test write to CSV operator
   writetoCSV(a_vector);
 
-
   // Test for warnings and exceptions
   Vector bigger_vector(3);
   Vector smaller_vector(1);

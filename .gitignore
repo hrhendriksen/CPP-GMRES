@@ -37,6 +37,10 @@
 *.dSYM.zip
 *.dSYM
 
+#log files
+*.log
+*.o
+
 # Other random stuff
 *.DS_Store
 *.cproject

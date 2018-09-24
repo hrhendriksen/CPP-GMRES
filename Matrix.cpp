@@ -57,7 +57,7 @@ Matrix::Matrix(int sizeVal_r, int sizeVal_c)
 }
 
 // initialisation constructor
-Matrix::Matrix(double arr[], int sizeVal_r, int sizeVal_c)
+Matrix::Matrix(const double arr[], int sizeVal_r, int sizeVal_c)
 {
 	mSize_r = sizeVal_r;
 	mSize_c = sizeVal_c;
@@ -75,7 +75,7 @@ Matrix::Matrix(double arr[], int sizeVal_r, int sizeVal_c)
 }
 
 // initialisation constructor
-Matrix::Matrix(Vector& vector, int sizeVal_r, int sizeVal_c)
+Matrix::Matrix(const Vector& vector, int sizeVal_r, int sizeVal_c)
 {
 		mSize_r = sizeVal_r;
 		mSize_c = sizeVal_c;
@@ -1119,13 +1119,18 @@ void print(const sparse_trid& S)
 // Multiplication operator for the sparse_trid matrix
 Vector operator*(const sparse_trid& S, Vector& v)
 {
+	// make sure the dimensions agree
 	assert(S.mSize == length(v));
+	// create a vector
 	Vector product(S.mSize);
+	// fill in its first value
 	product(1) = S.diagonal[0]*v(1)+S.superdiagonal[1]*v(2);
+	// calculate the non-boundary entries of the vector
 	for (int i = 2; i < S.mSize; ++i)
 	{	
 		product(i)=v(i-1)*S.subdiagonal[i-2]+v(i)*S.diagonal[i-1]+v(i+1)*S.superdiagonal[i];
 	}
+	//calculate last vector entrie
 	product(S.mSize) = S.diagonal[S.mSize-1]*v(S.mSize)+S.subdiagonal[S.mSize-2]*v(S.mSize-1);
 	return product;
 }

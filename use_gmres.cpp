@@ -62,6 +62,7 @@ int main(int argc, char const *argv[])
 	int max_iter = 1*matrix_size+1;
 	int max_adds  = 100;
 
+	// Preallocate matrix to store residuals in 
 	Matrix Res_mat(max_iter, max_adds);
 	for (int j = 1; j <= max_adds; ++j)
 	{
@@ -70,6 +71,7 @@ int main(int argc, char const *argv[])
 		double barr_3[matrix_size];
 		double x0arr_3[matrix_size];
 
+		// Create random matrix and vector
 		srand(1);
 		for (int ii = 0; ii < int(pow(matrix_size,2)); ++ii)
 		{
@@ -96,6 +98,7 @@ int main(int argc, char const *argv[])
 		Matrix ZZZ = A_3+j*eye(matrix_size);
 		Vector sol_3 = gmres(ZZZ, b_3, x0_3, max_iter+1, 1e-6);
 
+		//Write residual into matrix
 		for (int i = 1; i < length(sol_3); ++i)
 		{
 			Res_mat(i,j) = sol_3(i);
